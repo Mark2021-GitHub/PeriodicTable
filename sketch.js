@@ -27,6 +27,7 @@ let nm_ng = 'Nonmetals-Noble gases';
 var inputForm = document.querySelector("form");
 var inputTxt = document.querySelector(".txt");
 var playNextBtton = document.getElementById("playNext");
+var radioMute = document.getElementById("mute");
 var radioEn = document.getElementById("en");
 var radioKo = document.getElementById("ko");
 var radioKodesc = document.getElementById("koDesc");
@@ -128,6 +129,37 @@ class Element {
       textToSpeech(this.ename, vid);  
     }
   }
+  
+}
+
+let l = w*4+10;
+let t = h;
+let bw = 4*w;
+let bh = 5*h-20;
+let r = l+bw;
+let b = t + bh;
+function showBox(id) {
+  fill(elements[id].fillc);
+  stroke(0);
+  rect(l,t,bw,bh);
+  fill (255);
+  textSize(15);
+  for(let s=0; s<7; s++) {
+    let e = elements[id].shell[s]; 
+    if( e == 0 ) {
+      break;
+    } 
+    text(e,r-20, t+(s+1)*h/2);
+  }
+  textSize(20);
+  text(elements[id].id,l+5, t+20);
+  textSize(30);
+  text(elements[id].s,l+5, t+50);
+  textSize(15);
+  text(elements[id].kname,l+5, b-40);
+  text(elements[id].ename,l+5, b-20);
+  
+  
 }
 
 function showAtom(id,shell){
@@ -241,7 +273,7 @@ function draw() {
   for (let i = 1; i < n; i++) {
     elements[i].showPT(mouseX, mouseY);
   }
-  
+  noLoop();
 }
 
 playNextBtton.onclick = function (){
@@ -259,8 +291,10 @@ function playNext(){
   let str = splitTokens(sel, ':');
   let vnumber = Number(str[0]);
   
-    dtText.innerText =  elements[next].str;
-    ddText.innerText = elements[next].desc;
+  dtText.innerText =  elements[next].str;
+  ddText.innerText = elements[next].desc;
+  showAtom(elements[next].id, elements[next].shell );
+  showBox(next);
   
    if(bSwitch.checked == true){
        if(isNext == false ){
@@ -399,7 +433,12 @@ function mousePressed() {
       next = i;
       dtText.innerText = elements[next].str;
       ddText.innerText = elements[next].desc;
+      showAtom(elements[next].id, elements[next].shell);
+      showBox(next);
       
+      if(radioMute.checked == true){
+        return;
+      }
       if(bSwitch.checked == true){
         inputTxt.value = elements[i].ename;
         if( bVoice == false) {
