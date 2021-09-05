@@ -154,8 +154,10 @@ function showBox(id) {
   textSize(20);
   text(elements[id].id,l+5, t+20);
   textSize(30);
+  textStyle(BOLD);
   text(elements[id].s,l+5, t+50);
   textSize(15);
+  textStyle(NORMAL);
   text(elements[id].kname,l+5, b-40);
   text(elements[id].ename,l+5, b-20);
   
@@ -225,9 +227,9 @@ function fc(ptclass)
   } else if( ptclass == m_ac || ptclass == label_ac){
     return color(100,100,100);
   } else if( ptclass == ml){ 
-    return color(0,255,255);
+    return color(0,150,200);
   } else if( ptclass == nm_re){
-    return color(0,255,0);
+    return color(0,200,0);
   } else if( ptclass == nm_ha){
     return color(0,100,0);
   } else if( ptclass == nm_ng){
@@ -243,27 +245,30 @@ function setup() {
   
 }
 
+let gy=h*10+20;
+
 function showLabel() {
   
   // 1-18 Group Label
   textSize(10);
   fill(0);
-  text("Group▶︎",w,h-22)
+  text("Group▲",w,gy-2)
   textSize(15);
   for( let g=1; g <=18; g ++) {
-      text(g,g*w+5+w, h-20 );
+      text(g,g*w+5+w, gy );
   }
   
   // 1-7 Period Label
   textSize(10);
   fill(0);
   text("Period",w,3*h-12);
-  text("▼",w,3*h);
+  text("▶︎",w,3*h);
   
   textSize(15);
   for( let p=1; p<=7; p ++) {
       text(p,w,(p+3)*h -5 );
   }
+  
 }
 
 function draw() {
