@@ -6,6 +6,8 @@ let w = 35;
 let h = 35;
 let atomx = 11*w+10;
 let atomy = 3*h;
+let cLine1 = 0; // selected box's line color
+let cLine0 = 255; // normal box's stroke
 
 //Metal Class
 let m_al = 0; //'Alkali metals';
@@ -56,6 +58,7 @@ function setup() {
   setupElement();
   
 }
+
 function draw() {
   background(220);
   //
@@ -85,6 +88,7 @@ class Element {
     this.desc = desc;
     this.ptclass = ptclass;
     this.fillc = fc(this.ptclass);
+    this.linec = 255;
     this.tsize = 15;
     this.str=" "+this.id +" ["+this.s +"] "+this.ename+" ("+this.kname+")";
     
@@ -103,35 +107,35 @@ class Element {
     
   }
   
-  show(mx, my) {
-    stroke(255);
-    if (this.contains(mx, my)) {
-      fill(0, 255, 0);
-      rect(this.x, this.y, this.w, this.h);
-      fill(255, 0, 0);
-      dtText.innerText =  this.str;
-      ddText.innerText = this.desc;
-    } else {
-      fill(200);
-      rect(this.x, this.y, this.w, this.h);
-      fill(0, 0, 255);
-    }
-    textSize(this.tsize);
-    text(this.str,this.x,this.y + this.tsize);
-  }
-  
-  showPT(mx, my) {
+  show() {
+      this.linec = cLine1;
+      stroke(this.linec)
       fill(this.fillc);
       rect(this.x, this.y, this.w, this.h);
-      textSize(15);
+      textSize(13);
       fill(255);
       text(this.id,this.x+5,this.y + 12);
       textSize(15); 
       text(this.s,this.x+5,this.y + 30);
   
+  }
+  
+  showPT(mx, my) {
       if (this.contains(mx, my)) {
         showAtom(this.id, this.shell);
+        this.linec = cLine1;
+      } else {
+        this.linec = cLine0;
       }
+      stroke(this.linec)
+      fill(this.fillc);
+      rect(this.x, this.y, this.w, this.h);
+      textSize(13);
+      fill(255);
+      text(this.id,this.x+5,this.y + 12);
+      textSize(15); 
+      text(this.s,this.x+5,this.y + 30);
+  
   }
 
   contains(mx, my) {
@@ -157,6 +161,25 @@ class Element {
   
 }
 
+class ptLabel {
+  contructor(le, to, wi, he, ename, kname, ptclass ){
+    this.x = le;
+    this.y = to;
+    this.w = wi;
+    this.h = he;
+    this.ename = ename;
+    this.kname = kname;
+    this.ptclass = ptclass;
+    this.fillc = fc(ptclass);
+  }
+  show(mx, my) {
+      stroke(0);
+      fill(this.fillc);
+      rect(this.x, this.y, this.w, this.h);
+  }
+}
+
+// elements' detail box
 let l = w*4+10;
 let t = h;
 let bw = 4*w;
@@ -237,6 +260,8 @@ function showAtom(id,shell){
   pop();
        
 }
+
+var c
 function fc(ptclass) 
 {
   if( ptclass == m_al) {
@@ -260,6 +285,7 @@ function fc(ptclass)
   } else if( ptclass == nm_ng){
     return color(255,0,255);
   } 
+  return color(50,50,50);
 }
 
 
@@ -267,7 +293,7 @@ function fc(ptclass)
 let gy=h*10+20;
 
 function showLabel() {
-  
+  textStyle(NORMAL);
   // 1-18 Group Label
   textSize(10);
   fill(0);
@@ -309,8 +335,12 @@ function playNext(){
   
   dtText.innerText =  elements[next].str;
   ddText.innerText = elements[next].desc;
+  
   showAtom(elements[next].id, elements[next].shell );
   showBox(next);
+  redraw();
+  elements[next].show();
+  
   
    if(bSwitch.checked == true){
        if(isNext == false ){
@@ -428,6 +458,8 @@ function mousePressed() {
       ddText.innerText = elements[next].desc;
       showAtom(elements[next].id, elements[next].shell);
       showBox(next);
+      redraw();
+      elements[next].show();
       
       if(radioMute.checked == true){
         return;
