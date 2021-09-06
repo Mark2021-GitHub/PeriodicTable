@@ -4,8 +4,8 @@ let x = 10;
 let y = 15;
 let w = 35;
 let h = 35;
-let atomx = 11*w;
-let atomy = 3*h+10;
+let atomx = 11*w+10;
+let atomy = 3*h;
 
 //Metal Class
 let m_al = 0; //'Alkali metals';
@@ -47,6 +47,29 @@ let enVoice = [];
 let kVoice = [];
 let bVoice = false;
 let next = 1 ;
+
+
+function setup() {
+  cnv = createCanvas(800, 480);
+  
+  setupVoicesSelect();
+  setupElement();
+  
+}
+function draw() {
+  background(220);
+  //
+  showLabel() ;
+  for (let i = 1; i < n; i++) {
+    elements[i].showPT(mouseX, mouseY);
+  }
+  
+  showAtom(elements[next].id, elements[next].shell);
+  showBox(next);
+  
+  noLoop();
+}
+
 
 class Element {
   constructor(id, s, ename, kname, px, py, ptclass, shell, desc) {
@@ -223,7 +246,7 @@ function fc(ptclass)
   } else if( ptclass == m_tr){
     return color(100,0,0);
   } else if( ptclass == m_pt){
-    return color(255,200,0);
+    return color(200,150,0);
   } else if( ptclass == m_la || ptclass == label_la){
     return color(150,100,100);
   } else if( ptclass == m_ac || ptclass == label_ac){
@@ -239,13 +262,7 @@ function fc(ptclass)
   } 
 }
 
-function setup() {
-  cnv = createCanvas(800, 480);
-  
-  setupVoicesSelect();
-  setupElement();
-  
-}
+
 
 let gy=h*10+20;
 
@@ -271,26 +288,9 @@ function showLabel() {
       text(p,w,(p+3)*h -5 );
   }
   
-  // Metal Label
-  let cx = 21*w;
-  let cy = 3*h;
-  fill(150);
-  rect(cx, cy, w/2,3*h );
-  fill(0);
-  textWrap(CHAR);
-  textSize(15);
-  text("METAL", cx+2, cy+2, w/2, 3*h);
 }
 
-function draw() {
-  background(220);
-  //
-  showLabel() ;
-  for (let i = 1; i < n; i++) {
-    elements[i].showPT(mouseX, mouseY);
-  }
-  noLoop();
-}
+
 
 playNextBtton.onclick = function (){
   playNext();
