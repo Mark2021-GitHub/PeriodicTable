@@ -7,20 +7,20 @@ let h = 35;
 let atomx = 11*w;
 let atomy = 3*h+10;
 
-
-let m_al = 'Alkali metals';
-let m_ae = 'Alkaline earth metals';
-let m_tr = 'Transition metals';
-let m_pt = 'Post-transition metals';
+//Metal Class
+let m_al = 0; //'Alkali metals';
+let m_ae = 1; // 'Alkaline earth metals';
+let m_tr = 2; // 'Transition metals';
+let m_pt = 3; // 'Post-transition metals';
 let label_la = 'Label:Lanthanide' // Label
-let m_la = 'Lanthanide';
+let m_la = 4; 'Lanthanide';
 let label_ac = 'Label:Actinoid' // Label:  
-let m_ac = 'Actinoid'
+let m_ac = 5; // 'Actinoid'
 
-let ml = 'Metalloids';
-let nm_re = 'Reactive nonmetals';
-let nm_ha = 'Halogen';
-let nm_ng = 'Nonmetals-Noble gases';
+let ml = 6; // 'Metalloids';
+let nm_re = 7 // 'Reactive nonmetals';
+let nm_ha = 8 // 'Halogen';
+let nm_ng = 9 // 'Nonmetals-Noble gases';
 
 
 
@@ -35,10 +35,11 @@ var bSwitch = document.getElementById("check1");
 var dtText = document.getElementById("dt1");
 var ddText = document.getElementById("dd1");
 
-
 // for speechSynthesis;
 var synth = window.speechSynthesis;
 var voices = [];
+var selVoice = document.getElementById("voice");
+var rangeRate = document.getElementById("rate");
 let voiceSelect;
 let pitchSlider;
 let rateSlider;
@@ -122,6 +123,7 @@ class Element {
       return false;
     }
   }
+  
   speech(lang, vid){
     if(lang == 'ko-KR'){
       textToSpeech(this.kname, vid); 
@@ -219,7 +221,7 @@ function fc(ptclass)
   } else if( ptclass == m_ae){
     return color(255,100,0);
   } else if( ptclass == m_tr){
-    return color(150,0,0);
+    return color(100,0,0);
   } else if( ptclass == m_pt){
     return color(255,200,0);
   } else if( ptclass == m_la || ptclass == label_la){
@@ -240,7 +242,7 @@ function fc(ptclass)
 function setup() {
   cnv = createCanvas(800, 480);
   
-  setupVoices();
+  setupVoicesSelect();
   setupElement();
   
 }
@@ -269,6 +271,15 @@ function showLabel() {
       text(p,w,(p+3)*h -5 );
   }
   
+  // Metal Label
+  let cx = 21*w;
+  let cy = 3*h;
+  fill(150);
+  rect(cx, cy, w/2,3*h );
+  fill(0);
+  textWrap(CHAR);
+  textSize(15);
+  text("METAL", cx+2, cy+2, w/2, 3*h);
 }
 
 function draw() {
@@ -292,7 +303,7 @@ function playNext(){
    return;
   }
   
-  let sel = voiceSelect.value();
+  let sel = selVoice.value;
   let str = splitTokens(sel, ':');
   let vnumber = Number(str[0]);
   
@@ -338,7 +349,8 @@ inputForm.onsubmit = function (event) {
     return;
   }
   
-  let sel = voiceSelect.value();
+  //let sel = voiceSelect.value();
+  let sel = selVoice.value;
   let str = splitTokens(sel, ':');
   let vnumber = Number(str[0]);  
   
@@ -347,7 +359,6 @@ inputForm.onsubmit = function (event) {
   } else {
     textToSpeech(inputTxt.value, kVoice[0]);
   }
-  
   
 };
 
@@ -361,10 +372,10 @@ function textToSpeech(txt,vid) {
     var ut = new SpeechSynthesisUtterance(txt);
    
     ut.voice = voices[vid];
-    ut.pitch = pitchSlider.value();
-    ut.rate = rateSlider.value();
-    //ut.voiceURI = 'native';
-    //ut.volume = 1;
+    //ut.pitch = pitchSlider.value();
+    //ut.rate = rateSlider.value();
+    ut.pitch = 1;
+    ut.rate = rangeRate.value; 
     synth.speak(ut);
     ut.onboundary = function(event) {
      // console.log(event.name + ':' + event.elapsedTime);
@@ -372,26 +383,24 @@ function textToSpeech(txt,vid) {
   }
 }
 
-
-function setupVoices(){
+function setupVoicesSelect(){
   let voicestr;
   let e=0;
   let k=0;
   let isDefault = false;
   let defaultVoice;
   
-  voiceSelect = createSelect();
-  voiceSelect.position(1, cnv.position().y + height+20);
-  
   voices = synth.getVoices();
   for(var i = 0; i < voices.length; i++) {
     let str = i+":" + voices[i].name + "("+ voices[i].lang+")";
-    voiceSelect.option(str);
+    var option = document.createElement("option");
+    option.text = str;
+    selVoice.add(option);
     if(voices[i].lang == "en-US") {
       enVoice[e] = i;
       e ++;
       if(isDefault == false){
-        defaultVoice = str;
+        defaultVoice = i;
         isDefault = true;
       }
     } else if( voices[i].lang == "ko-KR"){
@@ -399,36 +408,15 @@ function setupVoices(){
       k++;
     }
   }  
-  voiceSelect.selected(defaultVoice);
-  voiceSelect.changed(changeVoice);
   
-  rateSlider = createSlider(0.5, 1, 1, 0.1);
-  rateSlider.position(1, voiceSelect.position().y+20);
-  rateSlider.style('width', '140px');
-  
-  pitchSlider = createSlider(0, 2, 1, 0.1);
-  pitchSlider.position(rateSlider.position().x + 150, rateSlider.position().y);
-  pitchSlider.style('width', '140px');
-  
-  let div1 = createDiv('음성 속도 조절');
-div1.style('font-size', '16px');
-div1.position(rateSlider.position().x ,rateSlider.position().y +20 );
-  let div2 = createDiv('음성 높이 조절');
-div2.style('font-size', '16px');
-div2.position(pitchSlider.position().x ,pitchSlider.position().y +20 );
-  
-}
+  selVoice.selectedIndex = defaultVoice;
+  rangeRate.defaultValue = 0.8;
 
-function changeVoice(){
-  let sel = voiceSelect.value();
-  let str = splitTokens(sel, ':');
-  let vnumber = Number(str[0]);
-    
-  textToSpeech(inputTxt.value, vnumber);
 }
 
 function mousePressed() {
-  let sel = voiceSelect.value();
+ // let sel = voiceSelect.value();
+  let sel = selVoice.value;
   let str = splitTokens(sel, ':');
   let vnumber = Number(str[0]);
  
