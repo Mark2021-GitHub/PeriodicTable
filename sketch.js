@@ -385,7 +385,6 @@ inputForm.onsubmit = function (event) {
     return;
   }
   
-  //let sel = voiceSelect.value();
   let sel = selVoice.value;
   let str = splitTokens(sel, ':');
   let vnumber = Number(str[0]);  
@@ -411,7 +410,8 @@ function textToSpeech(txt,vid) {
     //ut.pitch = pitchSlider.value();
     //ut.rate = rateSlider.value();
     ut.pitch = 1;
-    ut.rate = rangeRate.value; 
+    ut.rate = float(rangeRate.value); 
+    print(ut.rate);
     synth.speak(ut);
     ut.onboundary = function(event) {
      // console.log(event.name + ':' + event.elapsedTime);
@@ -429,19 +429,28 @@ function setupVoicesSelect(){
   voices = synth.getVoices();
   for(var i = 0; i < voices.length; i++) {
     let str = i+":" + voices[i].name + "("+ voices[i].lang+")";
-    var option = document.createElement("option");
-    option.text = str;
-    selVoice.add(option);
-    if(voices[i].lang == "en-US") {
+    
+    let lang = split(voices[i].lang, '-');
+    if(lang[0] == "en") {
+     
+      var option = document.createElement("option");
+      option.text = str;
+      selVoice.add(option);
+
       enVoice[e] = i;
       e ++;
       if(isDefault == false){
         defaultVoice = i;
         isDefault = true;
       }
-    } else if( voices[i].lang == "ko-KR"){
+    } else if( lang[0] == "ko"){
       kVoice[k] = i;
       k++;
+      
+      var option = document.createElement("option");
+      option.text = str;
+      selVoice.add(option);
+      
     }
   }  
   
@@ -506,7 +515,8 @@ function setupElement() {
   n++;
   elements[3] = new Element(3, "Li", "Lithium", "리튬", 1, 2,  m_al, [2,1,0,0,0,0,0], ": 대용량, 고효율의 리튬이온 전지에 사용되는 가장 가벼운 금속");
   n++;
-  elements[4] = new Element(4, "Be", "Beryllium", "베릴륨", 2, 2, m_ae, [2,2,0,0,0,0,0], ": 알루미늄보다 가볍고 강철보다 단단한 금속");
+  elements[4] = new Element(4, "Be", "Beryllium", 
+                            "베릴륨", 2, 2, m_ae, [2,2,0,0,0,0,0], ": 알루미늄보다 가볍고 강철보다 단단한 금속");
   n++;
   elements[5] = new Element(5, "B", "Boron", "붕소", 13, 2, ml, [2,3,0,0,0,0,0], ": 불에 타기 어려워 내열유리, 로켓 엔진 노즐등에 사용되는 반금속");
   n++;
