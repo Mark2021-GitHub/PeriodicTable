@@ -4,8 +4,6 @@ let x = 10;
 let y = 15;
 let w = 35;
 let h = 35;
-let atomx = 11*w+10;
-let atomy = 3*h;
 let cLine1 = 0; // selected box's line color
 let cLine0 = 255; // normal box's stroke
 
@@ -95,7 +93,7 @@ let next = 1 ;
 
 
 class csBox {
-  constructor(bx, by, bw, bh, name, ptclass,fsize) {
+  constructor(bx, by, bw, bh, name, ptclass,fsize, desc) {
     this.x = bx;
     this.y = by;
     this.w = bw;
@@ -104,6 +102,7 @@ class csBox {
     this.fillc = fc(ptclass);
     this.ptclass = ptclass;
     this.fsize = fsize;
+    this.desc = desc;
   }
   show(bLine) {
       if( bLine == true){
@@ -149,30 +148,35 @@ class csBox {
 }
 
 var csbox = []; //chemical series box
+function setupCSBox() {
+  let l = 14*w;
+  let t = 35;
+  let vy = t+23;
+  let vw = 15;
+  let vh = 90;
+  csbox[0] = new csBox(l, t, 105, 20, "금속", m,15, "[Metals]");
+  csbox[1] = new csBox(l+140, t, 50, 20, "비금속", nm,15,"[Nonmetals]");
+  csbox[2] = new csBox(l+113, vy, vw+5, vh, "준금속", ml,15, "[Metalloids]");
+    csbox[3] = new csBox(l, vy, vw, vh, "알칼리 금속", m_al,12, "[Metals - Alkali metals]");
+  csbox[4] = new csBox(l+18, vy, vw, vh, "알칼리 토금속", m_ae, 12, "[Metals - Alkaline earth metals]");
+   csbox[5] = new csBox(l+72, vy, vw, vh, "전이 금속", m_tr,12, "[Metals - Transition metals]"); 
+  csbox[6] = new csBox(l+90, vy, vw, vh, "전이후 금속", m_pt,12, "[Metals - Post-transition metals]");
+  csbox[7] = new csBox(l+36, vy+20, vw, vh-20, "란타넘족", m_la,12, "[Metals - Lanthanide]"); 
+  csbox[8] = new csBox(l+54, vy+20, vw, vh-20, "악티늄족", m_ac,12, "[Metals - Actinoid]");
+  csbox[9] = new csBox(l+140, vy, vw, vh, "반응성 비금속", nm_re,12, "[Nonmetals - Reactive nonmetals]");
+  csbox[10] = new csBox(l+158, vy, vw, vh, "할로젠", nm_ha,12, "[Nonmetals - Halogen]");
+   csbox[11] = new csBox(l+176, vy, vw, vh, "비활성 기체", nm_ng,12, "[Nonmetals - Noble gases]");
+}  
 
 function setup() {
-  cnv = createCanvas(800, 480);
+  cnv = createCanvas(800, 580);
   
   setupVoicesSelect();
   setupElement();
-  
-  let l = 14*w;
-  let t = 5;
-  csbox[0] = new csBox(l, t, 105, 15, "금속", m,13);
-  csbox[1] = new csBox(l+140, t, 50, 15, "비금속", nm,13);
-  csbox[2] = new csBox(l+115, t+18, 15, 75, "준금속", ml,12);
-    csbox[3] = new csBox(l, t+18, 15, 75, "알칼리 금속", m_al,12);
-  csbox[4] = new csBox(l+18, t+18, 15, 75, "알칼리 토금속", m_ae, 10);
-   csbox[5] = new csBox(l+72, t+18, 15, 75, "전이 금속", m_tr,12); 
-  csbox[6] = new csBox(l+90, t+18, 15, 75, "전이후 금속", m_pt,12);
-  csbox[7] = new csBox(l+36, t+38, 15, 55, "란타넘족", m_la,11); 
-  csbox[8] = new csBox(l+54, t+38, 15, 55, "악티늄족", m_ac,11);
-  csbox[9] = new csBox(l+140, t+18, 15, 75, "반응성 비금속", nm_re,10);
-  csbox[10] = new csBox(l+158, t+18, 15, 75, "할로젠", nm_ha,10);
-   csbox[11] = new csBox(l+176, t+18, 15, 75, "비활성 기체", nm_ng,10);
-  
-  
+  setupCSBox();
+    
 }
+
 
 function draw() {
   background(220);
@@ -196,6 +200,8 @@ function draw() {
   for(let i=0; i < 2; i++){
     if(csbox[i].contains(mouseX, mouseY)) {
        csbox[i].show(true);
+       dtText.innerText = csbox[i].name;
+       ddText.innerText = csbox[i].desc;
     } else {
        csbox[i].show(false);
     }  
@@ -203,6 +209,8 @@ function draw() {
   for(let i=2; i < 12; i++){
     if(csbox[i].contains(mouseX, mouseY)) {
        csbox[i].showV(true);
+       dtText.innerText = csbox[i].name;
+       ddText.innerText = csbox[i].desc;
     } else {
        csbox[i].showV(false);
     }  
@@ -249,6 +257,38 @@ bLoop.onclick = function (){
   }
 }
 
+let tableTop = 6*h;
+let tableBot = tableTop + h*7+20;
+
+function showLabel() {
+  strokeWeight(1);
+  stroke(255);
+  textStyle(NORMAL);
+  textAlign(LEFT,BASELINE);
+  
+  
+  // 1-7 Period Label
+  textSize(10);
+  fill(0);
+  text("Period",w,tableTop-12);
+  text("▶︎",w,tableTop);
+  textSize(15);
+  for( let p=1; p<=7; p ++) {
+      text(p,w,tableTop + p*h-5 );
+  }
+  
+  // 1-18 Group Label
+  textSize(10);
+  fill(0);
+  text("Group▲",w,tableBot-2)
+  textSize(15);
+  for( let g=1; g <=18; g ++) {
+      text(g,g*w+5+w, tableBot );
+  }
+  
+  
+}
+
 class Element {
   constructor(id, s, ename, kname, px, py, ptclass, shell, desc) {
     this.id = id;
@@ -268,7 +308,7 @@ class Element {
     this.str=" "+this.id +" ["+this.s +"] "+this.ename+" ("+this.kname+")";
     
     this.x = (this.px-1)*this.w+2*w;   
-    this.y = (this.py-1)*this.h+3*h; 
+    this.y = (this.py-1)*this.h+tableTop; 
       
     if(ptclass == m_la){
       this.x += (this.id - 56) * this.w;   
@@ -330,7 +370,7 @@ class Element {
 
 
 // elements' detail box
-let l = w*4+10;
+let l = w*3+10;
 let t = h;
 let bw = 4*w;
 let bh = 5*h-20;
@@ -372,6 +412,9 @@ function showBox(id) {
   text(eseries[elements[id].ptclass],l+5, b-5);
   
 }
+
+let atomx = 10*w+20;
+let atomy = 3*h+10;
 
 function showAtom(id,shell){
   push();
@@ -454,34 +497,6 @@ function fc(ptclass)
 
 
 
-let gy=h*10+20;
-
-function showLabel() {
-  strokeWeight(1);
-  stroke(255);
-  textStyle(NORMAL);
-  textAlign(LEFT,BASELINE);
-  // 1-18 Group Label
-  textSize(10);
-  fill(0);
-  text("Group▲",w,gy-2)
-  textSize(15);
-  for( let g=1; g <=18; g ++) {
-      text(g,g*w+5+w, gy );
-  }
-  
-  // 1-7 Period Label
-  textSize(10);
-  fill(0);
-  text("Period",w,3*h-12);
-  text("▶︎",w,3*h);
-  
-  textSize(15);
-  for( let p=1; p<=7; p ++) {
-      text(p,w,(p+3)*h -5 );
-  }
-  
-}
 
 
 
