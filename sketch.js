@@ -9,18 +9,58 @@ let atomy = 3*h;
 let cLine1 = 0; // selected box's line color
 let cLine0 = 255; // normal box's stroke
 
-//Metal Class
+//화학계열: chemical series
+let mseries = ['금속', 
+              '금속',
+              '금속',
+              '금속',
+              '금속',
+              '금속',
+              '준금속',
+              '비금속',
+              '비금속',
+              '비금속',
+              '금속',
+              '금속'];
+let eseries = ["Alkali metals", 
+              'Alkaline earth metals',
+              'Transition metals',
+              'Post-transition metals',
+              'Lanthanide',
+              'Actinoid',
+              'Metalloids',
+              'Reactive nonmetals',
+              'Halogen',
+              'Noble gases',
+              'Lanthanide',
+              'Actinoid'];
+let kseries = ["알칼리 금속", 
+              '알칼리 토금속',
+              '전이 금속',
+              '전이후 금속',
+              '란타넘족',
+              '악티늄족',
+              '준금속',
+              '반응성 비금속',
+              '할로젠',
+              '비활성 기체',
+              '란타넘족',
+              '악티늄족'];
+//Metal: 0-5 
 let m_al = 0; //'Alkali metals';
 let m_ae = 1; // 'Alkaline earth metals';
 let m_tr = 2; // 'Transition metals';
 let m_pt = 3; // 'Post-transition metals';
-let m_la = 4; //'Lanthanide';  
+let m_la = 4; // 'Lanthanide';  
 let m_ac = 5; // 'Actinoid'
 
-let ml = 6; // 'Metalloids';
-let nm_re = 7 // 'Reactive nonmetals';
+// 'Metalloids': 반금속/준금속
+let ml = 6; ;
+
+// Nonmetal : 7-9 비금속
+let nm_re = 7 // 'Reactive nonmetals' 반응성 비금속
 let nm_ha = 8 // 'Halogen';
-let nm_ng = 9 // 'Nonmetals-Noble gases';
+let nm_ng = 9 // 'Noble gases';
 
 let label_la = 10 //'Label:Lanthanide';
 let label_ac = 11 //'Label:Actinoid';
@@ -192,6 +232,7 @@ let bw = 4*w;
 let bh = 5*h-20;
 let r = l+bw;
 let b = t + bh;
+
 function showBox(id) {
   fill(elements[id].fillc);
   stroke(0);
@@ -203,18 +244,27 @@ function showBox(id) {
     if( e == 0 ) {
       break;
     } 
+    let ch = char(75+s); // 'K' - 75
+    text(ch,r-40, t+(s+1)*h/2);
     text(e,r-20, t+(s+1)*h/2);
   }
   textSize(20);
   text(elements[id].id,l+5, t+20);
   textSize(30);
   textStyle(BOLD);
-  text(elements[id].s,l+5, t+50);
+  text(elements[id].s,l+5, t+50); //원소기호
   textSize(15);
   textStyle(NORMAL);
-  text(elements[id].kname,l+5, b-40);
-  text(elements[id].ename,l+5, b-20);
+  textWrap(WORD); 
+  text(elements[id].kname,l+5, b-85); //원소명
+  textSize(13);
+  text(elements[id].ename,l+5, b-80,100);
   
+  textSize(14);
+  text("["+ mseries[elements[id].ptclass] +"]",l+5, b-35);
+  textSize(13);
+  text(kseries[elements[id].ptclass],l+5, b-20);
+  text(eseries[elements[id].ptclass],l+5, b-5);
   
 }
 
@@ -559,15 +609,15 @@ function setupElement() {
   n++;
   elements[20] = new Element(20, "Ca", "Calcium", "칼슘", 2, 4, m_ae, [2,8,8,2,0,0,0], ": 뼈와 치아의 주성분이 되는 금속");
   n++;
-  elements[21] = new Element(21, "Sc", "Scandium", "스칸듐", 3, 4, m_tr, [2,8,9,2,0,0,0], ": 멘델레예프가 예언한 원소로 태양처럼 밝은 빛을 내는 희소 금속");
+  elements[21] = new Element(21, "Sc", "Scandium", "스칸듐", 3, 4, m_tr, [2,8,9,2,0,0,0], ": 멘델레예프가 예언한 원소로 태양처럼 밝은 빛을 내는 희소 금속(전이 금속)");
   n++;
-  elements[22] = new Element(22, "Ti", "Titanium", "타이타늄", 4, 4, m_tr, [2,8,10,2,0,0,0], ": ");
+  elements[22] = new Element(22, "Ti", "Titanium", "타이타늄", 4, 4, m_tr, [2,8,10,2,0,0,0], ": 금속(전이 금속)");
   n++;
-  elements[23] = new Element(23, "V", "Vanadium", "바나듐", 5, 4, m_tr, [2,8,11,2,0,0,0], ": ");
+  elements[23] = new Element(23, "V", "Vanadium", "바나듐", 5, 4, m_tr, [2,8,11,2,0,0,0], ": 금속(전이 금속)");
   n++;
-  elements[24] = new Element(24, "Cr", "Chromium", "크로뮴", 6, 4, m_tr, [2,8,12,2,0,0,0], ": ");
+  elements[24] = new Element(24, "Cr", "Chromium", "크로뮴", 6, 4, m_tr, [2,8,12,2,0,0,0], ": 금속(전이 금속)");
   n++;
-  elements[25] = new Element(25,"Mn","Manganese","망가니즈 / 망간", 7, 4, m_tr, [2,8,13,2,0,0,0], ": ");
+  elements[25] = new Element(25,"Mn","Manganese","망가니즈 / 망간", 7, 4, m_tr, [2,8,13,2,0,0,0], ": 금속(전이 금속)");
   n++;
   elements[26] = new Element(26, "Fe", "Iron / Ferrum", "철", 8, 4, m_tr, [2,8,14,2,0,0,0],": ");
   n++;
@@ -621,7 +671,7 @@ function setupElement() {
   n++;
   elements[51] = new Element(51, "Sb", "Antimony / Stilbium", "안티모니", 15, 5, ml, [2,8,18,18,5,0,0], ": ");
   n++;
-  elements[52] = new Element(52, "Ag", "Tellurium", "텔루륨", 16, 5, ml, [2,8,18,18,6,0,0],  ": ");
+  elements[52] = new Element(52, "Te", "Tellurium", "텔루륨", 16, 5, ml, [2,8,18,18,6,0,0],  ": ");
   n++;
   elements[53] = new Element(53, "I", "Iodine", "아이오딘 / 요오드", 17, 5, nm_ha, [2,8,18,18,7,0,0], ": ");
   n++;
