@@ -516,17 +516,17 @@ function setupElement() {
   n++;
   elements[8] = new Element(8, "O", "Oxygen", "산소", 16, 2,nm_re, [2,6,0,0,0,0,0],": 물질을 연소시키거나 산화시키는 기체");
   n++;
-  elements[9] = new Element(9, "F", "Fluorine","플루오린/불소",17,2,nm_ha, [2,7,0,0,0,0,0], ": 조리 기구의 코팅제나 치약에 사용되는 반응성이 높은 기체");
+  elements[9] = new Element(9, "F", "Fluorine","플루오린 / 불소",17,2,nm_ha, [2,7,0,0,0,0,0], ": 조리 기구의 코팅제나 치약에 사용되는 반응성이 높은 기체");
   n++;
   elements[10] = new Element(10, "Ne", "Neon", "네온", 18, 2,nm_ng, [2,8,0,0,0,0,0], ": 전압을 가하면 붉게 빛나는 기체");
   n++;
-  elements[11] = new Element(11,"Na","Sodium / Natrium","소듐/나트륨",1,3, m_al, [2,8,1,0,0,0,0], ": 바닷물 속 소금에 풍부하게 존재하는 무른 금속");
+  elements[11] = new Element(11,"Na","Sodium / Natrium","소듐 / 나트륨",1,3, m_al, [2,8,1,0,0,0,0], ": 바닷물 속 소금에 풍부하게 존재하는 무른 금속");
   n++;
   elements[12] = new Element(12,"Mg","Magnesium","마그네슘",2,3, m_ae, [2,8,2,0,0,0,0], ": 쉽게 불에 타면서 밝은 백색광을 내고, 경량,고강도의 첨단 합금 소재 금속");
   n++;
   elements[13] = new Element(13,"Al","Aluminium","알루미늄",13,3, m_pt, [2,8,3,0,0,0,0], ": 가볍고, 열 전도성이 좋아 다양한 합금 소재로 산업에서 널리 활용되는 금속");
   n++;
-  elements[14] = new Element(14,"Si","Silicon","규소/실리콘",14,3, ml, [2,8,4,0,0,0,0], ": 지각에 산소 다음으로 풍부하게 존재하는 가장 저렴한 반도체");
+  elements[14] = new Element(14,"Si","Silicon","규소 / 실리콘",14,3, ml, [2,8,4,0,0,0,0], ": 지각에 산소 다음으로 풍부하게 존재하는 가장 저렴한 반도체");
   n++;
   elements[15] = new Element(15, "P", "Phosphorus", "인", 15, 3, nm_re, [2,8,5,0,0,0,0], ": 소변에서 추출되는 생체 화합물의 필수 원소인 비금속");
   n++;
@@ -536,7 +536,7 @@ function setupElement() {
   n++;
   elements[18] = new Element(18, "Ar", "Argon", "아르곤", 18, 3, nm_ng, [2,8,8,0,0,0,0], ": 반응성이 거의 없는 게으른 기체");
   n++;
-  elements[19] = new Element(19, "K","Potassium / Kalium","포타슘/칼륨",1,4, m_al, [2,8,8,1,0,0,0],": 비료의 3대 요소중 하나로 물과 격렬하게 반응하는 무른 금속");
+  elements[19] = new Element(19, "K","Potassium / Kalium","포타슘 / 칼륨",1,4, m_al, [2,8,8,1,0,0,0],": 비료의 3대 요소중 하나로 물과 격렬하게 반응하는 무른 금속");
   n++;
   elements[20] = new Element(20, "Ca", "Calcium", "칼슘", 2, 4, m_ae, [2,8,8,2,0,0,0], ": 뼈와 치아의 주성분이 되는 금속");
   n++;
@@ -548,7 +548,7 @@ function setupElement() {
   n++;
   elements[24] = new Element(24, "Cr", "Chromium", "크로뮴", 6, 4, m_tr, [2,8,12,2,0,0,0], ": ");
   n++;
-  elements[25] = new Element(25,"Mn","Manganese","망가니즈/망간", 7, 4, m_tr, [2,8,13,2,0,0,0], ": ");
+  elements[25] = new Element(25,"Mn","Manganese","망가니즈 / 망간", 7, 4, m_tr, [2,8,13,2,0,0,0], ": ");
   n++;
   elements[26] = new Element(26, "Fe", "Iron / Ferrum", "철", 8, 4, m_tr, [2,8,14,2,0,0,0],": ");
   n++;
@@ -562,7 +562,7 @@ function setupElement() {
   n++;
   elements[31] = new Element(31, "Ga", "Gallium", "갈륨", 13, 4, m_pt, [2,8,18,3,0,0,0], ": ");
    n++;
-  elements[32] = new Element(32, "Ge", "Germanium", "저마늄/게르마늄", 14, 4, ml, [2,8,18,4,0,0,0], ": ");
+  elements[32] = new Element(32, "Ge", "Germanium", "저마늄 / 게르마늄", 14, 4, ml, [2,8,18,4,0,0,0], ": ");
    n++;
   elements[33] = new Element(33, "As", "Arsenic", "비소", 15, 4, ml, [2,8,18,5,0,0,0], ": ");
    n++;
@@ -580,7 +580,7 @@ function setupElement() {
   n++;
   elements[40] = new Element(40,"Zr","Zirconium","지르코늄",4, 5, m_tr, [2,8,18,10,2,0,0], ": ");
   n++;
-  elements[41] = new Element(41,"Nb","Niobium","나이오븀/니오븀",5, 5, m_tr, [2,8,18,11,2,0,0],  ": ");
+  elements[41] = new Element(41,"Nb","Niobium","나이오븀 / 니오븀",5, 5, m_tr, [2,8,18,11,2,0,0],  ": ");
   n++;
   elements[42] = new Element(42,"Mo","Molybdenum","몰리브데넘",6, 5, m_tr, [2,8,18,12,2,0,0], ": ");
   n++;
@@ -604,9 +604,9 @@ function setupElement() {
   n++;
   elements[52] = new Element(52, "Ag", "Tellurium", "텔루륨", 16, 5, ml, [2,8,18,18,6,0,0],  ": ");
   n++;
-  elements[53] = new Element(53, "I", "Iodine", "아이오딘/요오드", 17, 5, nm_ha, [2,8,18,18,7,0,0], ": ");
+  elements[53] = new Element(53, "I", "Iodine", "아이오딘 / 요오드", 17, 5, nm_ha, [2,8,18,18,7,0,0], ": ");
   n++;
-  elements[54] = new Element(54, "Xe", "Xenon", "제논/크세논", 18, 5, nm_ng, [2,8,18,18,8,0,0], ": ");
+  elements[54] = new Element(54, "Xe", "Xenon", "제논 / 크세논", 18, 5, nm_ng, [2,8,18,18,8,0,0], ": ");
   n++;
     elements[55] = new Element(55, "Cs", "Caesium", "세슘", 1, 6, m_al,[2,8,18,18,8,1,0], ": ");
   n++;
@@ -654,7 +654,7 @@ function setupElement() {
   n++;
   elements[n] = new Element(77, "Ir", "Iridium", "이리듐", 9, 6, m_tr, [2,8,18,32,15,2,0], ": ");
   n++;  
-  elements[n] = new Element(78, "Pt", "Platinum", "백금/플래티넘", 10, 6, m_tr, [2,8,18,32,16,2,0], ": ");
+  elements[n] = new Element(78, "Pt", "Platinum", "백금 / 플래티넘", 10, 6, m_tr, [2,8,18,32,16,2,0], ": ");
   n++;
   elements[n] = new Element(79, "Au", "Gold / Aurum", "금", 11, 6, m_tr, [2,8,18,32,17,2,0], ": ");
   n++;
