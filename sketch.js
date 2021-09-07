@@ -271,7 +271,7 @@ function showLabel() {
   textSize(10);
   fill(0);
   text("Period",w,tableTop-12);
-  text("▶︎",w,tableTop);
+  text("▼",w,tableTop);
   textSize(15);
   for( let p=1; p<=7; p ++) {
       text(p,w,tableTop + p*h-5 );
@@ -280,7 +280,7 @@ function showLabel() {
   // 1-18 Group Label
   textSize(10);
   fill(0);
-  text("Group▲",w,tableBot-2)
+  text("Group ▶︎",w,tableBot-2)
   textSize(15);
   for( let g=1; g <=18; g ++) {
       text(g,g*w+5+w, tableBot );
