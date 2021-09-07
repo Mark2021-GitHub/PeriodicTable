@@ -95,7 +95,7 @@ let next = 1 ;
 
 
 class csBox {
-  constructor(bx, by, bw, bh, name, ptclass) {
+  constructor(bx, by, bw, bh, name, ptclass,fsize) {
     this.x = bx;
     this.y = by;
     this.w = bw;
@@ -103,6 +103,7 @@ class csBox {
     this.name = name;
     this.fillc = fc(ptclass);
     this.ptclass = ptclass;
+    this.fsize = fsize;
   }
   show(bLine) {
       if( bLine == true){
@@ -113,10 +114,25 @@ class csBox {
       fill(this.fillc);
       rect(this.x, this.y, this.w, this.h);
       fill(255);
-      textSize(15);
+      textSize(this.fsize);
       stroke(0);
       textAlign(CENTER,CENTER);
       text(this.name, this.x+this.w/2, this.y+this.h/2);
+  }
+  showV(bLine) {
+      if( bLine == true){
+        stroke(0); 
+      } else {
+        stroke(255);
+      } 
+      fill(this.fillc);
+      rect(this.x, this.y, this.w, this.h);
+      fill(255);
+      textSize(this.fsize);
+      stroke(0);
+      textAlign(LEFT,TOP);
+      textWrap(CHAR);
+      text(this.name, this.x+2, this.y+2, this.w);
   }
   contains(mx, my) {
     if (
@@ -141,10 +157,19 @@ function setup() {
   setupElement();
   
   let l = 14*w;
-  let t = 20;
-  csbox[0] = new csBox(l, t, 90, 20, "금속", 12);
-  csbox[1] = new csBox(l+95, t, 50, 20, "준금속", 6);
-  csbox[2] = new csBox(l+150, t, 90, 20, "비금속", 13);
+  let t = 5;
+  csbox[0] = new csBox(l, t, 105, 15, "금속", m,13);
+  csbox[1] = new csBox(l+140, t, 50, 15, "비금속", nm,13);
+  csbox[2] = new csBox(l+115, t+18, 15, 75, "준금속", ml,12);
+    csbox[3] = new csBox(l, t+18, 15, 75, "알칼리 금속", m_al,12);
+  csbox[4] = new csBox(l+18, t+18, 15, 75, "알칼리 토금속", m_ae, 10);
+   csbox[5] = new csBox(l+72, t+18, 15, 75, "전이 금속", m_tr,12); 
+  csbox[6] = new csBox(l+90, t+18, 15, 75, "전이후 금속", m_pt,12);
+  csbox[7] = new csBox(l+36, t+38, 15, 55, "란타넘족", m_la,11); 
+  csbox[8] = new csBox(l+54, t+38, 15, 55, "악티늄족", m_ac,11);
+  csbox[9] = new csBox(l+140, t+18, 15, 75, "반응성 비금속", nm_re,10);
+  csbox[10] = new csBox(l+158, t+18, 15, 75, "할로젠", nm_ha,10);
+   csbox[11] = new csBox(l+176, t+18, 15, 75, "비활성 기체", nm_ng,10);
   
   
 }
@@ -166,6 +191,32 @@ function draw() {
     }
   }
   
+  showSeries(); 
+  
+  for(let i=0; i < 2; i++){
+    if(csbox[i].contains(mouseX, mouseY)) {
+       csbox[i].show(true);
+    } else {
+       csbox[i].show(false);
+    }  
+  }
+  for(let i=2; i < 12; i++){
+    if(csbox[i].contains(mouseX, mouseY)) {
+       csbox[i].showV(true);
+    } else {
+       csbox[i].showV(false);
+    }  
+  }
+  
+  
+  if(bLoop.checked == false){ 
+    showAtom(elements[next].id, elements[next].shell);
+    showBox(next); 
+    noLoop();
+  }    
+}
+
+function showSeries() {
   for (let i=1;i <n; i++) {
     if(csbox[0].contains(mouseX, mouseY)) { 
       // 금속
@@ -174,35 +225,23 @@ function draw() {
         elements[i].show(true);
       }
     } else if(csbox[1].contains(mouseX, mouseY)) { 
-      // 준금속
-      if(elements[i].ptclass == 6) {
-        elements[i].show(true);
-      }
-    } else if(csbox[2].contains(mouseX, mouseY)) { 
       // 비금속
       if( 7 <= elements[i].ptclass &&  elements[i].ptclass <= 9 ) {
         elements[i].show(true);
       }
-    }
-
-  }
-   
- 
-  
-  for(let i=0; i < 3; i++){
-    if(csbox[i].contains(mouseX, mouseY)) {
-       csbox[i].show(true);
     } else {
-       csbox[i].show(false);
-    }  
+      for(let j=2; j<12; j++) {
+        if(csbox[j].contains(mouseX, mouseY)) { 
+        // 
+          if(elements[i].ptclass == csbox[j].ptclass) {
+            elements[i].show(true);
+          }
+        }  
+      }        
+    } 
   }
-  
-  if(bLoop.checked == false){ 
-    showAtom(elements[next].id, elements[next].shell);
-    showBox(next); 
-    noLoop();
-  }    
 }
+
 
 bLoop.onclick = function (){
   if(bLoop.checked == true){
@@ -402,13 +441,13 @@ function fc(ptclass)
   } else if( ptclass == nm_re){
     return color(0,200,0);
   } else if( ptclass == nm_ha){
-    return color(0,100,0);
+    return color(0,150,0);
   } else if( ptclass == nm_ng){
-    return color(255,0,255);
+    return color(0,100,0);
   } else if( ptclass == m){
     return color(150,0,0);
   } else if( ptclass == nm){
-    return color(0,0,150);
+    return color(255,0,255);
   }
   return color(50,50,50);
 }
@@ -608,7 +647,7 @@ function mousePressed() {
       elements[next].show(true);
       
       if(radioMute.checked == true){
-        return;
+        break;
       }
       if(bSwitch.checked == true){
         inputTxt.value = elements[i].ename;
@@ -637,6 +676,33 @@ function mousePressed() {
       
     }
   }
+  
+  
+  
+  for(let i=0; i < 2; i++){
+    if(csbox[i].contains(mouseX, mouseY)) {
+       csbox[i].show(true);
+      if(radioMute.checked == true){
+        break;
+      }
+      textToSpeech(csbox[i].name, kVoice[0]);
+    } else {
+       csbox[i].show(false);
+    }  
+  }
+  for(let i=2; i < 12; i++){
+    if(csbox[i].contains(mouseX, mouseY)) {
+       csbox[i].showV(true);
+       if(radioMute.checked == true){
+        break;
+       }
+       textToSpeech(csbox[i].name, kVoice[0]);
+    } else {
+       csbox[i].showV(false);
+    }  
+  }
+  redraw();
+  showSeries();
 }
 
 function setupElement() {
