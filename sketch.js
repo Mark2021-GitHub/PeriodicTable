@@ -379,6 +379,22 @@ function playNext(){
    
 }
 
+selVoice.onchange = function (){
+  if(synth.speaking) {
+    return;
+  }
+  
+  let sel = selVoice.value;
+  let str = splitTokens(sel, ':');
+  let vnumber = Number(str[0]);  
+  
+  if(radioEn.checked == true){
+    textToSpeech(inputTxt.value, vnumber);
+  } else {
+    textToSpeech(inputTxt.value, kVoice[0]);
+  }
+  
+}
 inputForm.onsubmit = function (event) {
   event.preventDefault();
   if(synth.speaking) {
@@ -400,22 +416,15 @@ inputForm.onsubmit = function (event) {
 
 function textToSpeech(txt,vid) {
   if (synth.speaking) {
-    //synth.cancel();
     return;
   }
   if (txt !== "") {
     var ut = new SpeechSynthesisUtterance(txt);
    
     ut.voice = voices[vid];
-    //ut.pitch = pitchSlider.value();
-    //ut.rate = rateSlider.value();
     ut.pitch = 1;
     ut.rate = float(rangeRate.value); 
-    print(ut.rate);
     synth.speak(ut);
-    ut.onboundary = function(event) {
-     // console.log(event.name + ':' + event.elapsedTime);
-    }
   }
 }
 
