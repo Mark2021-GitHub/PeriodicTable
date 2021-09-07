@@ -58,12 +58,14 @@ let m_ac = 5; // 'Actinoid'
 let ml = 6; ;
 
 // Nonmetal : 7-9 비금속
-let nm_re = 7 // 'Reactive nonmetals' 반응성 비금속
-let nm_ha = 8 // 'Halogen';
-let nm_ng = 9 // 'Noble gases';
+let nm_re = 7; // 'Reactive nonmetals' 반응성 비금속
+let nm_ha = 8; // 'Halogen';
+let nm_ng = 9; // 'Noble gases';
 
-let label_la = 10 //'Label:Lanthanide';
-let label_ac = 11 //'Label:Actinoid';
+let label_la = 10; //'Label:Lanthanide';
+let label_ac = 11; //'Label:Actinoid';
+let m = 12;  // 금속 전체
+let nm = 13; // 비금속 전체
 
 var inputForm = document.querySelector("form");
 var inputTxt = document.querySelector(".txt");
@@ -91,26 +93,115 @@ let bVoice = false;
 let next = 1 ;
 
 
+
+class csBox {
+  constructor(bx, by, bw, bh, name, ptclass) {
+    this.x = bx;
+    this.y = by;
+    this.w = bw;
+    this.h = bh;
+    this.name = name;
+    this.fillc = fc(ptclass);
+    this.ptclass = ptclass;
+  }
+  show(bLine) {
+      if( bLine == true){
+        stroke(0); 
+      } else {
+        stroke(255);
+      } 
+      fill(this.fillc);
+      rect(this.x, this.y, this.w, this.h);
+      fill(255);
+      textSize(15);
+      stroke(0);
+      textAlign(CENTER,CENTER);
+      text(this.name, this.x+this.w/2, this.y+this.h/2);
+  }
+  contains(mx, my) {
+    if (
+      this.x < mx &&
+      mx < this.x + this.w &&
+      this.y < my &&
+      my < this.y + this.h
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+
+var csbox = []; //chemical series box
+
 function setup() {
   cnv = createCanvas(800, 480);
   
   setupVoicesSelect();
   setupElement();
   
+  let l = 14*w;
+  let t = 20;
+  csbox[0] = new csBox(l, t, 90, 20, "금속", 12);
+  csbox[1] = new csBox(l+95, t, 50, 20, "준금속", 6);
+  csbox[2] = new csBox(l+150, t, 90, 20, "비금속", 13);
+  
+  
 }
 
 function draw() {
   background(220);
-  //
-  showLabel() ;
+  
+  showLabel() ;  // Period, Group Label
   for (let i = 1; i < n; i++) {
-    elements[i].showPT(mouseX, mouseY);
+   
+    if( elements[i].contains(mouseX, mouseY) ){
+      dtText.innerText = elements[i].str;
+      ddText.innerText = elements[i].desc;
+      showAtom(elements[i].id, elements[i].shell);
+      showBox(i);
+      elements[i].show(true);
+    } else {
+      elements[i].show(false);
+    }
   }
-  if(bLoop.checked == false){
+  
+  for (let i=1;i <n; i++) {
+    if(csbox[0].contains(mouseX, mouseY)) { 
+      // 금속
+      if(elements[i].ptclass < 6 || 
+         elements[i].ptclass > 9) {
+        elements[i].show(true);
+      }
+    } else if(csbox[1].contains(mouseX, mouseY)) { 
+      // 준금속
+      if(elements[i].ptclass == 6) {
+        elements[i].show(true);
+      }
+    } else if(csbox[2].contains(mouseX, mouseY)) { 
+      // 비금속
+      if( 7 <= elements[i].ptclass &&  elements[i].ptclass <= 9 ) {
+        elements[i].show(true);
+      }
+    }
+
+  }
+   
+ 
+  
+  for(let i=0; i < 3; i++){
+    if(csbox[i].contains(mouseX, mouseY)) {
+       csbox[i].show(true);
+    } else {
+       csbox[i].show(false);
+    }  
+  }
+  
+  if(bLoop.checked == false){ 
     showAtom(elements[next].id, elements[next].shell);
     showBox(next); 
     noLoop();
-  }
+  }    
 }
 
 bLoop.onclick = function (){
@@ -152,30 +243,21 @@ class Element {
     
   }
   
-  show() {
-      this.linec = cLine1;
-      stroke(this.linec)
-      fill(this.fillc);
-      rect(this.x, this.y, this.w, this.h);
-      textSize(13);
-      fill(255);
-      text(this.id,this.x+5,this.y + 12);
-      textSize(15); 
-      text(this.s,this.x+5,this.y + 30);
-  
-  }
-  
-  showPT(mx, my) {
-      if (this.contains(mx, my)) {
-        showAtom(this.id, this.shell);
-        showBox(this.id); 
+  show(bLine) {
+     if (bLine == true) { 
         this.linec = cLine1;
+        strokeWeight(2);
       } else {
         this.linec = cLine0;
+        strokeWeight(1);
       }
+     
       stroke(this.linec)
       fill(this.fillc);
       rect(this.x, this.y, this.w, this.h);
+      stroke(0);
+      strokeWeight(1);
+      textAlign(LEFT,BASELINE);
       textSize(13);
       fill(255);
       text(this.id,this.x+5,this.y + 12);
@@ -207,23 +289,6 @@ class Element {
   
 }
 
-class ptLabel {
-  contructor(le, to, wi, he, ename, kname, ptclass ){
-    this.x = le;
-    this.y = to;
-    this.w = wi;
-    this.h = he;
-    this.ename = ename;
-    this.kname = kname;
-    this.ptclass = ptclass;
-    this.fillc = fc(ptclass);
-  }
-  show(mx, my) {
-      stroke(0);
-      fill(this.fillc);
-      rect(this.x, this.y, this.w, this.h);
-  }
-}
 
 // elements' detail box
 let l = w*4+10;
@@ -239,6 +304,7 @@ function showBox(id) {
   rect(l,t,bw,bh);
   fill (255);
   textSize(15);
+  textAlign(LEFT, BASELINE);
   for(let s=0; s<7; s++) {
     let e = elements[id].shell[s]; 
     if( e == 0 ) {
@@ -317,7 +383,6 @@ function showAtom(id,shell){
        
 }
 
-var c
 function fc(ptclass) 
 {
   if( ptclass == m_al) {
@@ -340,7 +405,11 @@ function fc(ptclass)
     return color(0,100,0);
   } else if( ptclass == nm_ng){
     return color(255,0,255);
-  } 
+  } else if( ptclass == m){
+    return color(150,0,0);
+  } else if( ptclass == nm){
+    return color(0,0,150);
+  }
   return color(50,50,50);
 }
 
@@ -349,7 +418,10 @@ function fc(ptclass)
 let gy=h*10+20;
 
 function showLabel() {
+  strokeWeight(1);
+  stroke(255);
   textStyle(NORMAL);
+  textAlign(LEFT,BASELINE);
   // 1-18 Group Label
   textSize(10);
   fill(0);
@@ -395,7 +467,7 @@ function playNext(){
   showAtom(elements[next].id, elements[next].shell );
   showBox(next);
   redraw();
-  elements[next].show();
+  elements[next].show(true);
   
   
    if(bSwitch.checked == true){
@@ -533,7 +605,7 @@ function mousePressed() {
       showAtom(elements[next].id, elements[next].shell);
       showBox(next);
       redraw();
-      elements[next].show();
+      elements[next].show(true);
       
       if(radioMute.checked == true){
         return;
@@ -615,7 +687,7 @@ function setupElement() {
   n++;
   elements[23] = new Element(23, "V", "Vanadium", "바나듐", 5, 4, m_tr, [2,8,11,2,0,0,0], ": 금속(전이 금속)");
   n++;
-  elements[24] = new Element(24, "Cr", "Chromium", "크로뮴", 6, 4, m_tr, [2,8,12,2,0,0,0], ": 금속(전이 금속)");
+  elements[24] = new Element(24, "Cr", "Chromium", "크로뮴", 6, 4, m_tr, [2,8,13,1,0,0,0], ": 금속(전이 금속)");
   n++;
   elements[25] = new Element(25,"Mn","Manganese","망가니즈 / 망간", 7, 4, m_tr, [2,8,13,2,0,0,0], ": 금속(전이 금속)");
   n++;
@@ -625,7 +697,7 @@ function setupElement() {
   n++;
   elements[28] = new Element(28, "Ni", "Nickel", "니켈", 10, 4, m_tr, [2,8,16,2,0,0,0], ": ");
   n++;
-  elements[29] = new Element(29,"Cu","Copper (Cuprum)","구리",11,4, m_tr, [2,8,17,2,0,0,0], ": ");
+  elements[29] = new Element(29,"Cu","Copper (Cuprum)","구리",11,4, m_tr, [2,8,18,1,0,0,0], ": ");
   n++;
   elements[30] = new Element(30, "Zn", "Zinc", "아연", 12, 4, m_tr, [2,8,18,2,0,0,0], ": ");
   n++;
@@ -649,19 +721,19 @@ function setupElement() {
   n++;
   elements[40] = new Element(40,"Zr","Zirconium","지르코늄",4, 5, m_tr, [2,8,18,10,2,0,0], ": ");
   n++;
-  elements[41] = new Element(41,"Nb","Niobium","나이오븀 / 니오븀",5, 5, m_tr, [2,8,18,11,2,0,0],  ": ");
+  elements[41] = new Element(41,"Nb","Niobium","나이오븀 / 니오븀",5, 5, m_tr, [2,8,18,12,1,0,0],  ": ");
   n++;
-  elements[42] = new Element(42,"Mo","Molybdenum","몰리브데넘",6, 5, m_tr, [2,8,18,12,2,0,0], ": ");
+  elements[42] = new Element(42,"Mo","Molybdenum","몰리브데넘",6, 5, m_tr, [2,8,18,13,1,0,0], ": ");
   n++;
   elements[43] = new Element(43,"Tc","Technetium","테크네튬",7, 5, m_tr, [2,8,18,13,2,0,0],  ": ");
   n++;
-  elements[44] = new Element(44,"Ru","Ruthenium","루테늄",8, 5, m_tr, [2,8,18,14,2,0,0], ": ");
+  elements[44] = new Element(44,"Ru","Ruthenium","루테늄",8, 5, m_tr, [2,8,18,15,1,0,0], ": ");
   n++;
-  elements[45] = new Element(45,"Rh","Rhodium","로듐",9, 5, m_tr, [2,8,18,15,2,0,0], ": ");
+  elements[45] = new Element(45,"Rh","Rhodium","로듐",9, 5, m_tr, [2,8,18,16,1,0,0], ": ");
   n++;
-  elements[46] = new Element(46,"Pd","Palladium","팔라듐",10, 5, m_tr, [2,8,18,16,2,0,0], ": ");
+  elements[46] = new Element(46,"Pd","Palladium","팔라듐",10, 5, m_tr, [2,8,18,18,0,0,0], ": ");
   n++;
-  elements[47] = new Element(47, "Ag", "Silver (Argentum)", "은", 11, 5, m_tr, [2,8,18,17,2,0,0], ": ");
+  elements[47] = new Element(47, "Ag", "Silver (Argentum)", "은", 11, 5, m_tr, [2,8,18,18,1,0,0], ": ");
   n++;
   elements[48] = new Element(48, "Cd", "Cadmium", "카드뮴", 12, 5, m_tr, [2,8,18,18,2,0,0],  ": ");
   n++;
@@ -681,9 +753,9 @@ function setupElement() {
   n++;
   elements[56] = new Element(56, "Ba", "Barium", "바륨", 2, 6, m_ae, [2,8,18,18,8,2,0], ": ");
   n++;
-  elements[57] = new Element(57, "La", "Lanthanum", "란타넘", 3, 6, m_la, [2,8,18,19,8,2,0], ": ");
+  elements[57] = new Element(57, "La", "Lanthanum", "란타넘", 3, 6, m_la, [2,8,18,18,9,2,0], ": ");
   n++;
-  elements[n] = new Element(58, "Ce", "Cerium", "세륨", 3, 6, m_la, [2,8,18,20,8,2,0], ": ");
+  elements[n] = new Element(58, "Ce", "Cerium", "세륨", 3, 6, m_la, [2,8,18,19,9,2,0], ": ");
   n++;
   elements[n] = new Element(59, "Pr", "Praseodymium", "프라세오디뮴", 3, 6, m_la, [2,8,18,21,8,2,0], ": ");
   n++;
@@ -695,7 +767,7 @@ function setupElement() {
   n++;
   elements[n] = new Element(63, "Eu", "Europium", "유로퓸", 3, 6, m_la, [2,8,18,25,8,2,0], ": ");
   n++;
-  elements[n] = new Element(64, "Gd", "Gadolinium", "가돌리늄", 3, 6, m_la, [2,8,18,26,8,2,0], ": ");
+  elements[n] = new Element(64, "Gd", "Gadolinium", "가돌리늄", 3, 6, m_la, [2,8,18,25,9,2,0], ": ");
   n++;
   elements[n] = new Element(65, "Tb", "Terbium", "터븀", 3, 6, m_la, [2,8,18,27,8,2,0], ": ");
   n++;
@@ -723,9 +795,9 @@ function setupElement() {
   n++;
   elements[n] = new Element(77, "Ir", "Iridium", "이리듐", 9, 6, m_tr, [2,8,18,32,15,2,0], ": ");
   n++;  
-  elements[n] = new Element(78, "Pt", "Platinum", "백금 / 플래티넘", 10, 6, m_tr, [2,8,18,32,16,2,0], ": ");
+  elements[n] = new Element(78, "Pt", "Platinum", "백금 / 플래티넘", 10, 6, m_tr, [2,8,18,32,17,1,0], ": ");
   n++;
-  elements[n] = new Element(79, "Au", "Gold (Aurum)", "금", 11, 6, m_tr, [2,8,18,32,17,2,0], ": ");
+  elements[n] = new Element(79, "Au", "Gold (Aurum)", "금", 11, 6, m_tr, [2,8,18,32,18,1,0], ": ");
   n++;
   elements[n] = new Element(80,"Hg","Mercury (Hydrargyrum)","수은",12,6, m_tr, [2,8,18,32,18,2,0], ": ");
   n++;
@@ -745,21 +817,21 @@ function setupElement() {
   n++;
   elements[n] = new Element(88, "Ra", "Radium", "라듐", 2, 7, m_ae, [2,8,18,32,18,8,2], ": ");
   n++;
-  elements[n] = new Element(89, "Ac", "Actinium", "악티늄", 3, 7, m_ac, [2,8,18,32,19,8,2], ": ");
+  elements[n] = new Element(89, "Ac", "Actinium", "악티늄", 3, 7, m_ac, [2,8,18,32,18,9,2], ": ");
   n++;
-  elements[n] = new Element(90, "Th", "Thorium", "토륨", 3, 7, m_ac, [2,8,18,32,20,8,2], ": ");
+  elements[n] = new Element(90, "Th", "Thorium", "토륨", 3, 7, m_ac, [2,8,18,32,18,10,2], ": ");
   n++;
-  elements[n] = new Element(91, "Pa", "Protactinium", "프로트악티늄", 3, 7, m_ac, [2,8,18,32,21,8,2], ": ");
+  elements[n] = new Element(91, "Pa", "Protactinium", "프로트악티늄", 3, 7, m_ac, [2,8,18,32,20,9,2], ": ");
   n++;
-  elements[n] = new Element(92, "U", "Uranium", "우라늄", 3, 7, m_ac, [2,8,18,32,22,8,2], ": ");
+  elements[n] = new Element(92, "U", "Uranium", "우라늄", 3, 7, m_ac, [2,8,18,32,21,9,2], ": ");
   n++;
-  elements[n] = new Element(93, "Np", "Neptunium", "넵투늄", 3, 7, m_ac, [2,8,18,32,23,8,2], ": ");
+  elements[n] = new Element(93, "Np", "Neptunium", "넵투늄", 3, 7, m_ac, [2,8,18,32,22,9,2], ": ");
   n++;
   elements[n] = new Element(94, "Pu", "Plutonium", "플루토늄", 3, 7, m_ac, [2,8,18,32,24,8,2], ": ");
   n++;
   elements[n] = new Element(95, "Am", "Americium", "아메리슘", 3, 7,  m_ac, [2,8,18,32,25,8,2], ": ");
   n++;
-  elements[n] = new Element(96, "Cm", "Curium", "퀴륨", 3, 7, m_ac, [2,8,18,32,26,8,2], ": ");
+  elements[n] = new Element(96, "Cm", "Curium", "퀴륨", 3, 7, m_ac, [2,8,18,32,25,9,2], ": ");
   n++;
   elements[n] = new Element(97, "Bk", "Berkelium", "버클륨", 3, 7, m_ac,[2,8,18,32,27,8,2],  ": ");
   n++;
@@ -773,7 +845,7 @@ function setupElement() {
   n++;
   elements[n] = new Element(102, "No", "Nobellium", "노벨륨", 3, 7, m_ac, [2,8,18,32,32,8,2], ": ");
   n++;
-  elements[n] = new Element(103, "Lr", "Lawrencium", "로렌슘", 3, 7, m_ac, [2,8,18,32,32,9,2], ": ");
+  elements[n] = new Element(103, "Lr", "Lawrencium", "로렌슘", 3, 7, m_ac, [2,8,18,32,32,8,3], ": ");
   n++;
   elements[n] = new Element(104, "Rf", "Rutherfordium", "러더포듐", 4, 7, m_tr, [2,8,18,32,32,10,2], ": ");
   n++;
