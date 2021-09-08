@@ -157,7 +157,7 @@ function setupCSBox() {
   csbox[0] = new csBox(l, t, 105, 20, "금속", m,15, "[Metals]");
   csbox[1] = new csBox(l+140, t, 50, 20, "비금속", nm,15,"[Nonmetals]");
   csbox[2] = new csBox(l+113, vy, vw+5, vh, "준금속", ml,15, "[Metalloids]");
-    csbox[3] = new csBox(l, vy, vw, vh, "알칼리 금속", m_al,12, "[Metals - Alkali metals]");
+    csbox[3] = new csBox(l, vy, vw, vh, "알칼리 금속", m_al,12, ": 물과 반응해 염기성 용액을 만드는 높은 반응성을 가진 금속");
   csbox[4] = new csBox(l+18, vy, vw, vh, "알칼리 토금속", m_ae, 12, "[Metals - Alkaline earth metals]");
    csbox[5] = new csBox(l+72, vy, vw, vh, "전이 금속", m_tr,12, "[Metals - Transition metals]"); 
   csbox[6] = new csBox(l+90, vy, vw, vh, "전이후 금속", m_pt,12, "[Metals - Post-transition metals]");
@@ -424,11 +424,11 @@ function showAtom(id,shell){
   circle(0,0,180); // atom's background
   
   fill(125);
-  circle(0,0,20); // proton, neutron
+  circle(0,0,25); // proton, neutron
   textSize(10);
   fill(255);
   textAlign(CENTER, CENTER);
-  text(id,0,0);  // atom number
+  text("+"+id,0,0);  // atom number
   for(let s=0; s<7; s++) { // shell number = s+1;
       let e = shell[s]; 
       if( e > 0 ) { // e = number of electrons
