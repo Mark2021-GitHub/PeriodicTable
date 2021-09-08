@@ -177,8 +177,20 @@ function setupCSBox() {
   
 }  
 
+var cnv;
+
+function centerCanvas() {
+  var x = (windowWidth - width) / 2;
+  var y = dtText.offsetTop +100  ;
+  cnv.position(x, y);
+}
+function windowResized() {
+  centerCanvas();
+}
+
 function setup() {
-  var cnv = createCanvas(800, 580);
+  cnv = createCanvas(800, 580);
+  centerCanvas();
   
   setupVoicesSelect();
   setupElement();
