@@ -64,6 +64,7 @@ let label_la = 10; //'Label:Lanthanide';
 let label_ac = 11; //'Label:Actinoid';
 let m = 12;  // 금속 전체
 let nm = 13; // 비금속 전체
+let rep = 14; // 
 
 var inputForm = document.querySelector("form");
 var inputTxt = document.querySelector(".txt");
@@ -148,24 +149,30 @@ class csBox {
 }
 
 var csbox = []; //chemical series box
+var repbox ; // 전형원소(representative element) box
 function setupCSBox() {
   let l = 14*w;
   let t = 35;
   let vy = t+23;
   let vw = 15;
   let vh = 90;
+  let vs = 3;
   csbox[0] = new csBox(l, t, 105, 20, "금속", m,15, "[Metals]");
   csbox[1] = new csBox(l+140, t, 50, 20, "비금속", nm,15,"[Nonmetals]");
-  csbox[2] = new csBox(l+113, vy, vw+5, vh, "준금속", ml,15, "[Metalloids]");
+  csbox[2] = new csBox(l+113, vy, vw+5, vh-30, "준금속", ml,14, "[Metalloids]");
     csbox[3] = new csBox(l, vy, vw, vh, "알칼리 금속", m_al,12, ": 물과 반응해 염기성 용액을 만드는 높은 반응성을 가진 금속");
   csbox[4] = new csBox(l+18, vy, vw, vh, "알칼리 토금속", m_ae, 12, "[Metals - Alkaline earth metals]");
-   csbox[5] = new csBox(l+72, vy, vw, vh, "전이 금속", m_tr,12, "[Metals - Transition metals]"); 
+   csbox[5] = new csBox(l+72, vy+20, vw, vh-20, "전이 금속", m_tr,12, "[Metals - Transition metals]"); 
   csbox[6] = new csBox(l+90, vy, vw, vh, "전이후 금속", m_pt,12, "[Metals - Post-transition metals]");
-  csbox[7] = new csBox(l+36, vy+20, vw, vh-20, "란타넘족", m_la,12, "[Metals - Lanthanide]"); 
-  csbox[8] = new csBox(l+54, vy+20, vw, vh-20, "악티늄족", m_ac,12, "[Metals - Actinoid]");
+  csbox[7] = new csBox(l+36, vy+30, vw, vh-30, "란타넘족", m_la,12, "[Metals - Lanthanide]"); 
+  csbox[8] = new csBox(l+54, vy+30, vw, vh-30, "악티늄족", m_ac,12, "[Metals - Actinoid]");
   csbox[9] = new csBox(l+140, vy, vw, vh, "반응성 비금속", nm_re,12, "[Nonmetals - Reactive nonmetals]");
   csbox[10] = new csBox(l+158, vy, vw, vh, "할로젠", nm_ha,12, "[Nonmetals - Halogen]");
    csbox[11] = new csBox(l+176, vy, vw, vh, "비활성 기체", nm_ng,12, "[Nonmetals - Noble gases]");
+  
+  repbox = new csBox(l, t-30, 190, 20, "전형원소", rep,15, "[Representative element]");
+
+  
 }  
 
 function setup() {
@@ -197,6 +204,7 @@ function draw() {
   
   showSeries(); 
   
+  // 금속 / 비금속 가로 상자 표지
   for(let i=0; i < 2; i++){
     if(csbox[i].contains(mouseX, mouseY)) {
        csbox[i].show(true);
@@ -206,6 +214,7 @@ function draw() {
        csbox[i].show(false);
     }  
   }
+  // 세부 화학계열 세로 상자 표시
   for(let i=2; i < 12; i++){
     if(csbox[i].contains(mouseX, mouseY)) {
        csbox[i].showV(true);
@@ -215,6 +224,16 @@ function draw() {
        csbox[i].showV(false);
     }  
   }
+  // 전형원소 상자 표시
+  
+    if(repbox.contains(mouseX, mouseY)) {
+      repbox.show(true);
+      dtText.innerText = repbox.name;
+      ddText.innerText = repbox.desc;
+    }else {
+      repbox.show(false);
+    }
+  
   
   
   if(bLoop.checked == false){ 
@@ -225,9 +244,16 @@ function draw() {
 }
 
 function showSeries() {
+  
   for (let i=1;i <n; i++) {
-    if(csbox[0].contains(mouseX, mouseY)) { 
-      // 금속
+    if(repbox.contains(mouseX,mouseY)){
+      // 전형 원소 표시, Period 1,2, 13~18
+      if(elements[i].px <= 2 || 
+         elements[i].px >= 13) {
+        elements[i].show(true);
+      }
+    } else if(csbox[0].contains(mouseX, mouseY)) { 
+      // 금속 원소, ptclass: 0~5, 10~
       if(elements[i].ptclass < 6 || 
          elements[i].ptclass > 9) {
         elements[i].show(true);
@@ -242,6 +268,14 @@ function showSeries() {
         if(csbox[j].contains(mouseX, mouseY)) { 
         // 
           if(elements[i].ptclass == csbox[j].ptclass) {
+            elements[i].show(true);
+          }
+          // 란타넘족 박스 표시
+          if(csbox[j].ptclass == m_la && elements[i].ptclass== label_la) {
+            elements[i].show(true);
+          }
+          // 악티늄족 박스 표시
+          if(csbox[j].ptclass == m_ac && elements[i].ptclass== label_ac) {
             elements[i].show(true);
           }
         }  
@@ -259,6 +293,7 @@ bLoop.onclick = function (){
 
 let tableTop = 6*h;
 let tableBot = tableTop + h*7+20;
+
 
 function showLabel() {
   strokeWeight(1);
@@ -285,6 +320,16 @@ function showLabel() {
   for( let g=1; g <=18; g ++) {
       text(g,g*w+5+w, tableBot );
   }
+  
+  // 란타넘족
+  textSize(13);
+  fill(0);
+  text("란타넘족 ▶︎", w*3, tableBot+30);
+  text("[57-71]", w*3, tableBot+45);
+  text("악티늄족 ▶︎", w*3, tableBot+65);
+  text("[89-103]", w*3, tableBot+80);
+  
+  
   
   
 }
@@ -472,13 +517,13 @@ function fc(ptclass)
   } else if( ptclass == m_ae){
     return color(255,100,0);
   } else if( ptclass == m_tr){
-    return color(100,0,0);
+    return color(120,0,0);
   } else if( ptclass == m_pt){
     return color(200,150,0);
   } else if( ptclass == m_la || ptclass == label_la){
     return color(150,100,100);
   } else if( ptclass == m_ac || ptclass == label_ac){
-    return color(100,100,100);
+    return color(120,100,100);
   } else if( ptclass == ml){ 
     return color(0,150,200);
   } else if( ptclass == nm_re){
@@ -488,9 +533,11 @@ function fc(ptclass)
   } else if( ptclass == nm_ng){
     return color(0,100,0);
   } else if( ptclass == m){
-    return color(150,0,0);
+    return color(100,0,0);
   } else if( ptclass == nm){
-    return color(255,0,255);
+    return color(0,50,0);
+  } else if( ptclass == rep){
+    return color(150,150,150);
   }
   return color(50,50,50);
 }
@@ -645,7 +692,6 @@ function setupVoicesSelect(){
 }
 
 function mousePressed() {
- // let sel = voiceSelect.value();
   let sel = selVoice.value;
   let str = splitTokens(sel, ':');
   let vnumber = Number(str[0]);
@@ -675,7 +721,6 @@ function mousePressed() {
         }
       } else {
            if(radioEn.checked == true){
-              //elements[i].speech(voices[vnumber].lang, vnumber);
               inputTxt.value = elements[i].ename;
               textToSpeech(elements[i].ename, vnumber);
             } else if(radioKo.checked == true ) {
@@ -691,33 +736,28 @@ function mousePressed() {
       
     }
   }
-  
-  
+
+  if(repbox.contains(mouseX, mouseY)) {
+    if(radioMute.checked == false){
+      textToSpeech(repbox.name, kVoice[0]);
+    }
+  }  
   
   for(let i=0; i < 2; i++){
     if(csbox[i].contains(mouseX, mouseY)) {
-       csbox[i].show(true);
-      if(radioMute.checked == true){
-        break;
-      }
-      textToSpeech(csbox[i].name, kVoice[0]);
-    } else {
-       csbox[i].show(false);
+      if(radioMute.checked == false){
+         textToSpeech(csbox[i].name, kVoice[0]);
+      }  
     }  
   }
   for(let i=2; i < 12; i++){
     if(csbox[i].contains(mouseX, mouseY)) {
-       csbox[i].showV(true);
-       if(radioMute.checked == true){
-        break;
+       if(radioMute.checked == false){
+        textToSpeech(csbox[i].name, kVoice[0]);
        }
-       textToSpeech(csbox[i].name, kVoice[0]);
-    } else {
-       csbox[i].showV(false);
     }  
   }
   redraw();
-  showSeries();
 }
 
 function setupElement() {
@@ -958,6 +998,7 @@ function setupElement() {
   n++;
   elements[n] = new Element(118, "Og", "Oganesson", "오가네손", 18, 7, nm_ng, [2,8,18,32,32,18,8], ": ");
   n++;
+  // label_la, m_la
   elements[n] = new Element(57, "-71", "Lanthanide", "란타넘족", 3, 6, label_la, [0,0,0,0,0,0,0], ": ");
   n++;
  elements[n] = new Element(89, "-103", "Actinide", "악티늄족", 3, 7, label_ac, [0,0,0,0,0,0,0], ": ");
