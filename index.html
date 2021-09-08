@@ -8,12 +8,6 @@
   </head>
   <body>
     <h3>주기율표(Periodic Table) 랑 친해지기 <a href=http://new.kcsnet.or.kr/periodictable target="_blank">[설명 영상] </a></h2> 
-    
-    <dl>
-      <dt id=dt1>*원소번호 [기호] 원소 이름 </dt>
-      <dd id=dd1>: 간략한 특징 요약 </a></dd>
-    </dl>
-    
     <form>
       <input type="radio" id="en" name="nextLang" value="en">
          영어
@@ -35,6 +29,12 @@
        <label for="rate">음성 속도</label> 
       <input type="range" id="rate" name="voiceRate" min="0.5" max="1" step="0.1" />
     </form>
+     <details>
+  <summary id=dt1>*원소번호 [기호] 원소 이름 </summary>
+  <p id=dd1>: 간략한 특징 요약 </p>
+</details>
+
     <script src="sketch.js"></script>
+
   </body>
 </html>
