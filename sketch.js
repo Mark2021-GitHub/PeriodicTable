@@ -152,31 +152,33 @@ var csbox = []; //chemical series box
 var repbox ; // 전형원소(representative element) box
 function setupCSBox() {
   let l = 14*w;
-  let t = 35;
+  let t = 60;
   let vy = t+23;
-  let vw = 15;
-  let vh = 90;
-  let vs = 3;
-  csbox[0] = new csBox(l, t, 105, 20, "금속", m,15, "[Metals]");
-  csbox[1] = new csBox(l+140, t, 50, 20, "비금속", nm,15,"[Nonmetals]");
-  csbox[2] = new csBox(l+113, vy, vw+5, vh-30, "준금속", ml,14, "[Metalloids]");
-    csbox[3] = new csBox(l, vy, vw, vh, "알칼리 금속", m_al,12, ": 물과 반응해 염기성 용액을 만드는 높은 반응성을 가진 금속");
-  csbox[4] = new csBox(l+18, vy, vw, vh, "알칼리 토금속", m_ae, 12, "[Metals - Alkaline earth metals]");
-   csbox[5] = new csBox(l+72, vy+20, vw, vh-20, "전이 금속", m_tr,12, "[Metals - Transition metals]"); 
-  csbox[6] = new csBox(l+90, vy, vw, vh, "전이후 금속", m_pt,12, "[Metals - Post-transition metals]");
-  csbox[7] = new csBox(l+36, vy+30, vw, vh-30, "란타넘족", m_la,12, "[Metals - Lanthanide]"); 
-  csbox[8] = new csBox(l+54, vy+30, vw, vh-30, "악티늄족", m_ac,12, "[Metals - Actinoid]");
-  csbox[9] = new csBox(l+140, vy, vw, vh, "반응성 비금속", nm_re,12, "[Nonmetals - Reactive nonmetals]");
-  csbox[10] = new csBox(l+158, vy, vw, vh, "할로젠", nm_ha,12, "[Nonmetals - Halogen]");
-   csbox[11] = new csBox(l+176, vy, vw, vh, "비활성 기체", nm_ng,12, "[Nonmetals - Noble gases]");
+  let vw = 18;
+  let vh = 105;
+  let vs = vw+3;
+  let font1 = 15;
+  let font2 = 14;
+  csbox[0] = new csBox(l, t, vs*6-3, 20, "금속", m, font1, "[Metals]");
+  csbox[1] = new csBox(l+vs*7, t, vs*3, 20, "비금속", nm, font1,"[Nonmetals]");
+  csbox[2] = new csBox(l+vs*6, t, vw, vh-30, "준금속", ml,font2, "[Metalloids]");
+    csbox[3] = new csBox(l, vy, vw, vh, "알칼리 금속", m_al,font2, ": 물과 반응해 염기성 용액을 만드는 높은 반응성을 가진 금속");
+  csbox[4] = new csBox(l+vs, vy, vw, vh, "알칼리 토금속", m_ae, font2, "존재량이 풍부해 다양한 분야에서 활용되는 높은 반응성의 금속");
+   csbox[5] = new csBox(l+vs*4, vy+20, vw, vh-20, "전이 금속", m_tr,font2, "[Metals - Transition metals]"); 
+  csbox[6] = new csBox(l+vs*5, vy, vw, vh, "전이후 금속", m_pt,font2, "[Metals - Post-transition metals]");
+  csbox[7] = new csBox(l+vs*2, vy+30, vw, vh-30, "란타넘족", m_la,font2, "[Metals - Lanthanide]"); 
+  csbox[8] = new csBox(l+vs*3, vy+30, vw, vh-30, "악티늄족", m_ac,font2, "[Metals - Actinoid]");
+  csbox[9] = new csBox(l+vs*7, vy, vw, vh, "반응성 비금속", nm_re,font2, "[Nonmetals - Reactive nonmetals]");
+  csbox[10] = new csBox(l+vs*8, vy, vw, vh, "할로젠", nm_ha,font2, "Group 17: Halogen - 1가 음이온이 되는 원소들로 1족 원소(1가 양이온)들과 격렬하게 반응하여 염을 생성");
+   csbox[11] = new csBox(l+vs*9, vy, vw, vh, "비활성 기체", nm_ng,font2, "Group 18: Noble gas - 불활성 기체라고도 하는 18족 원소들은 최외각 전자껍질이 완전히 채워져 있어 반응성이 매우 낮고, 상온에서 모두 기체 상태로 존재, 물질의 보호에 널리 사용");
   
-  repbox = new csBox(l, t-30, 190, 20, "전형원소", rep,15, "[Representative element]");
+  repbox = new csBox(l, t-30, vs*10, 20, "전형원소", rep,font1, "[Representative element]");
 
   
 }  
 
 function setup() {
-  cnv = createCanvas(800, 580);
+  var cnv = createCanvas(800, 580);
   
   setupVoicesSelect();
   setupElement();
