@@ -44,6 +44,9 @@ let kseries = ["알칼리 금속",
               '비활성 기체',
               '란타넘족',
               '악티늄족'];
+
+let strPhases = ["고체(Solid)", "액체(Liquid)", "기체(Gas)"];
+
 //Metal: 0-5 
 let m_al = 0; //'Alkali metals';
 let m_ae = 1; // 'Alkaline earth metals';
@@ -64,7 +67,11 @@ let label_la = 10; //'Label:Lanthanide';
 let label_ac = 11; //'Label:Actinoid';
 let m = 12;  // 금속 전체
 let nm = 13; // 비금속 전체
-let rep = 14; // 
+let rep = 14; // 전형원소
+
+let solid =0; // 상온에서 상태: 고체, 액체, 기체
+let liquid= 1;
+let gas=2;
 
 var inputForm = document.querySelector("form");
 var inputTxt = document.querySelector(".txt");
@@ -159,9 +166,9 @@ function setupCSBox() {
   let vs = vw+3;
   let font1 = 15;
   let font2 = 14;
-  csbox[0] = new csBox(l, t, vs*6-3, 20, "금속", m, font1, "[Metals]");
+  csbox[0] = new csBox(l, t, vs*6-3, 20, "금속", m, font1, "[금속,Metals]은 일반적으로 상온에서 고체 상태로 존재하며, 특유의 광택을 띠고 열과 전기를 잘 전달하는 도체로, 연성과 전성을 갖는다. 주기율표 상에 위치하는 118개의 원소 중 대략 4분의 3 정도가 일반적인 금속의 정의에 해당된다. 보통 금속 원소는 전자를 잃고 양이온이 되기 쉬우며, 비금속은 반대로 전자를 얻기 쉽다.");
   csbox[1] = new csBox(l+vs*7, t, vs*3, 20, "비금속", nm, font1,"[Nonmetals]");
-  csbox[2] = new csBox(l+vs*6, t, vw, vh-30, "준금속", ml,font2, "[Metalloids]");
+  csbox[2] = new csBox(l+vs*6, t, vw, vh-30, "준금속", ml,font2, "[준금속,  Metalloids]은 금속과 비금속의 경계에 있어서 중간 성질을 띄는 화학 원소 계열이다. 일반적으로 5-B, 14-Si, 32-Ge, 33-As 51-Sb, 52-Te, 84-Po 를 준금속으로 분류한다.");
     csbox[3] = new csBox(l, vy, vw, vh, "알칼리 금속", m_al,font2, ": 물과 반응해 염기성 용액을 만드는 높은 반응성을 가진 금속");
   csbox[4] = new csBox(l+vs, vy, vw, vh, "알칼리 토금속", m_ae, font2, "존재량이 풍부해 다양한 분야에서 활용되는 높은 반응성의 금속");
    csbox[5] = new csBox(l+vs*4, vy+20, vw, vh-20, "전이 금속", m_tr,font2, "[Metals - Transition metals]"); 
@@ -172,7 +179,7 @@ function setupCSBox() {
   csbox[10] = new csBox(l+vs*8, vy, vw, vh, "할로젠", nm_ha,font2, "Group 17: Halogen - 1가 음이온이 되는 원소들로 1족 원소(1가 양이온)들과 격렬하게 반응하여 염을 생성");
    csbox[11] = new csBox(l+vs*9, vy, vw, vh, "비활성 기체", nm_ng,font2, "Group 18: Noble gas - 불활성 기체라고도 하는 18족 원소들은 최외각 전자껍질이 완전히 채워져 있어 반응성이 매우 낮고, 상온에서 모두 기체 상태로 존재, 물질의 보호에 널리 사용");
   
-  repbox = new csBox(l, t-30, vs*10, 20, "전형원소", rep,font1, "[Representative element]");
+  repbox = new csBox(l, t-30, vs*10, 20, "전형원소", rep,font1, "[주족원소 主族元素, Main-group element] 라고도 불리는 1~2족, 13~18족 원소들로 족별 성질이 극명하게 드러나는 대표적인 원소들을 의미");
 
   
 }  
@@ -181,7 +188,7 @@ var cnv;
 
 function centerCanvas() {
   var x = (windowWidth - width) / 2;
-  var y = dtText.offsetTop +100  ;
+  var y = dtText.offsetTop + 100  ;
   cnv.position(x, y);
 }
 function windowResized() {
@@ -343,13 +350,23 @@ function showLabel() {
   text("악티늄족 ▶︎", w*3, tableBot+65);
   text("[89-103]", w*3, tableBot+80);
   
+  // 상온 상태
   
+  textSize(13);
+  fill(0);
+  text("[기호 색깔] ▶︎ 상온 상태", w*4 +13, tableBot-w*6-30);
+  fill(255,0,0);
+  text("빨간색 ▶︎ 기체", w*5, tableBot-w*6 -15);
+  fill(0,0,255);
+  text("파란색 ▶︎ 액체", w*5, tableBot-w*6 );
+  fill(0);
+  text("흰   색 ▶︎ 고체", w*5, tableBot-w*6+15);
   
   
 }
 
 class Element {
-  constructor(id, s, ename, kname, px, py, ptclass, shell, desc) {
+  constructor(id, s, ename, kname, px, py, ptclass, shell, phase, desc) {
     this.id = id;
     this.s = s;
   
@@ -377,6 +394,7 @@ class Element {
       this.y += this.h*3; 
     } 
     
+    this.phase = phase;
     this.shell = shell;
     
   }
@@ -400,6 +418,18 @@ class Element {
       fill(255);
       text(this.id,this.x+5,this.y + 12);
       textSize(15); 
+    
+      if(this.phase == gas)
+      {
+          fill(255,0,0);  
+          
+      } else if (this.phase == liquid) {
+          fill(0,0,255); 
+      } else {
+          fill(255);
+      }
+        
+      
       text(this.s,this.x+5,this.y + 30);
   
   }
@@ -456,7 +486,17 @@ function showBox(id) {
   text(elements[id].id,l+5, t+20);
   textSize(30);
   textStyle(BOLD);
+  if(elements[id].phase == gas)
+      {
+          fill(255,0,0);  
+          
+      } else if (elements[id].phase == liquid) {
+          fill(0,0,255); 
+      } else {
+          fill(255);
+      }
   text(elements[id].s,l+5, t+50); //원소기호
+  fill(255);
   textSize(13);
   textStyle(NORMAL);
   textWrap(WORD); 
@@ -464,7 +504,11 @@ function showBox(id) {
   textSize(13);
   text(elements[id].ename,l+5, b-80,95);//영어 원소명
   
-  textSize(13);
+  // 상온에서 상태 표시
+  // text( strPhases[elements[id].phase], l+5, b-55);
+    
+  
+  textSize(13)
   text("["+ mseries[elements[id].ptclass] +"]",l+5, b-35);
   textSize(13);
   text(kseries[elements[id].ptclass],l+5, b-20);
@@ -775,247 +819,247 @@ function mousePressed() {
 }
 
 function setupElement() {
-  elements[1] = new Element(1, "H", "Hydrogen", "수소", 1, 1, nm_re, [1,0,0,0,0,0,0], ": 가장 가볍고 불에 타기 쉬운 기체");
+  elements[1] = new Element(1, "H", "Hydrogen", "수소", 1, 1, nm_re, [1,0,0,0,0,0,0], gas, ": 가장 가볍고 불에 타기 쉬운 기체");
   n++;
-  elements[2] = new Element(2, "He", "Helium", "헬륨", 18, 1, nm_ng, [2,0,0,0,0,0,0], ": 풍선을 뜨게하는 가벼운 기체");
+  elements[2] = new Element(2, "He", "Helium", "헬륨", 18, 1, nm_ng, [2,0,0,0,0,0,0], gas, ": 풍선을 뜨게하는 가벼운 기체");
   n++;
-  elements[3] = new Element(3, "Li", "Lithium", "리튬", 1, 2,  m_al, [2,1,0,0,0,0,0], ": 대용량, 고효율의 리튬이온 전지에 사용되는 가장 가벼운 금속");
+  elements[3] = new Element(3, "Li", "Lithium", "리튬", 1, 2,  m_al, [2,1,0,0,0,0,0], solid, ": 대용량, 고효율의 리튬이온 전지에 사용되는 가장 가벼운 금속");
   n++;
   elements[4] = new Element(4, "Be", "Beryllium", 
-                            "베릴륨", 2, 2, m_ae, [2,2,0,0,0,0,0], ": 알루미늄보다 가볍고 강철보다 단단한 금속");
+                            "베릴륨", 2, 2, m_ae, [2,2,0,0,0,0,0], solid, ": 알루미늄보다 가볍고 강철보다 단단한 금속");
   n++;
-  elements[5] = new Element(5, "B", "Boron", "붕소", 13, 2, ml, [2,3,0,0,0,0,0], ": 불에 타기 어려워 내열유리, 로켓 엔진 노즐등에 사용되는 반금속");
+  elements[5] = new Element(5, "B", "Boron", "붕소", 13, 2, ml, [2,3,0,0,0,0,0], solid, ": 불에 타기 어려워 내열유리, 로켓 엔진 노즐등에 사용되는 반금속");
   n++;
-  elements[6] = new Element(6, "C", "Carbon", "탄소", 14, 2, nm_re,[2,4,0,0,0,0,0], ": 다이아몬드, 연필심, 유기화합물을 이루는 생명의 원소");
+  elements[6] = new Element(6, "C", "Carbon", "탄소", 14, 2, nm_re,[2,4,0,0,0,0,0], solid, ": 다이아몬드, 연필심, 유기화합물을 이루는 생명의 원소");
   n++;
-  elements[7] = new Element(7, "N", "Nitrogen", "질소", 15, 2,nm_re, [2,5,0,0,0,0,0], ": 공기의 78%를 차지하는 기체");
+  elements[7] = new Element(7, "N", "Nitrogen", "질소", 15, 2,nm_re, [2,5,0,0,0,0,0], gas, ": 공기의 78%를 차지하는 기체");
   n++;
-  elements[8] = new Element(8, "O", "Oxygen", "산소", 16, 2,nm_re, [2,6,0,0,0,0,0],": 물질을 연소시키거나 산화시키는 기체");
+  elements[8] = new Element(8, "O", "Oxygen", "산소", 16, 2,nm_re, [2,6,0,0,0,0,0], gas, ": 물질을 연소시키거나 산화시키는 기체");
   n++;
-  elements[9] = new Element(9, "F", "Fluorine","플루오린 / 불소",17,2,nm_ha, [2,7,0,0,0,0,0], ": 조리 기구의 코팅제나 치약에 사용되는 반응성이 높은 기체");
+  elements[9] = new Element(9, "F", "Fluorine","플루오린 / 불소",17,2,nm_ha,  [2,7,0,0,0,0,0], gas,  ": 조리 기구의 코팅제나 치약에 사용되는 반응성이 높은 기체");
   n++;
-  elements[10] = new Element(10, "Ne", "Neon", "네온", 18, 2,nm_ng, [2,8,0,0,0,0,0], ": 전압을 가하면 붉게 빛나는 기체");
+  elements[10] = new Element(10, "Ne", "Neon", "네온", 18, 2,nm_ng, [2,8,0,0,0,0,0], gas,  ": 전압을 가하면 붉게 빛나는 기체");
   n++;
-  elements[11] = new Element(11,"Na","Sodium (Natrium)","소듐 / 나트륨",1,3, m_al, [2,8,1,0,0,0,0], ": 바닷물 속 소금에 풍부하게 존재하는 무른 금속");
+  elements[11] = new Element(11,"Na","Sodium (Natrium)","소듐 / 나트륨",1,3, m_al, [2,8,1,0,0,0,0], solid, ": 바닷물 속 소금에 풍부하게 존재하는 무른 금속");
   n++;
-  elements[12] = new Element(12,"Mg","Magnesium","마그네슘",2,3, m_ae, [2,8,2,0,0,0,0], ": 쉽게 불에 타면서 밝은 백색광을 내고, 경량,고강도의 첨단 합금 소재 금속");
+  elements[12] = new Element(12,"Mg","Magnesium","마그네슘",2,3, m_ae, [2,8,2,0,0,0,0],  solid, ": 쉽게 불에 타면서 밝은 백색광을 내고, 경량,고강도의 첨단 합금 소재 금속");
   n++;
-  elements[13] = new Element(13,"Al","Aluminium","알루미늄",13,3, m_pt, [2,8,3,0,0,0,0], ": 가볍고, 열 전도성이 좋아 다양한 합금 소재로 산업에서 널리 활용되는 금속");
+  elements[13] = new Element(13,"Al","Aluminium","알루미늄",13,3, m_pt, [2,8,3,0,0,0,0],  solid, ": 가볍고, 열 전도성이 좋아 다양한 합금 소재로 산업에서 널리 활용되는 금속");
   n++;
-  elements[14] = new Element(14,"Si","Silicon","규소 / 실리콘",14,3, ml, [2,8,4,0,0,0,0], ": 지각에 산소 다음으로 풍부하게 존재하는 가장 저렴한 반도체");
+  elements[14] = new Element(14,"Si","Silicon","규소 / 실리콘",14,3, ml, [2,8,4,0,0,0,0], solid,  ": 지각에 산소 다음으로 풍부하게 존재하는 가장 저렴한 반도체");
   n++;
-  elements[15] = new Element(15, "P", "Phosphorus", "인", 15, 3, nm_re, [2,8,5,0,0,0,0], ": 소변에서 추출되는 생체 화합물의 필수 원소인 비금속");
+  elements[15] = new Element(15, "P", "Phosphorus", "인", 15, 3, nm_re, [2,8,5,0,0,0,0], solid,  ": 소변에서 추출되는 생체 화합물의 필수 원소인 비금속");
   n++;
-  elements[16] = new Element(16, "S", "Sulfur", "황", 16, 3, nm_re, [2,8,6,0,0,0,0], ": 화산지대에서 직접 채굴 되는 노란색 비금속"); 
+  elements[16] = new Element(16, "S", "Sulfur", "황", 16, 3, nm_re, [2,8,6,0,0,0,0],  solid, ": 화산지대에서 직접 채굴 되는 노란색 비금속"); 
   n++;
-  elements[17] = new Element(17, "Cl", "Chlorine", "염소", 17, 3, nm_ha, [2,8,7,0,0,0,0], ": 자극적인 냄새가 있는 황록색 기체");
+  elements[17] = new Element(17, "Cl", "Chlorine", "염소", 17, 3, nm_ha, [2,8,7,0,0,0,0], gas,  ": 자극적인 냄새가 있는 황록색 기체");
   n++;
-  elements[18] = new Element(18, "Ar", "Argon", "아르곤", 18, 3, nm_ng, [2,8,8,0,0,0,0], ": 반응성이 거의 없는 게으른 기체");
+  elements[18] = new Element(18, "Ar", "Argon", "아르곤", 18, 3, nm_ng, [2,8,8,0,0,0,0], gas, ": 반응성이 거의 없는 게으른 기체");
   n++;
-  elements[19] = new Element(19, "K","Potassium (Kalium)","포타슘 / 칼륨",1,4, m_al, [2,8,8,1,0,0,0],": 비료의 3대 요소중 하나로 물과 격렬하게 반응하는 무른 금속");
+  elements[19] = new Element(19, "K","Potassium (Kalium)","포타슘 / 칼륨",1,4, m_al, [2,8,8,1,0,0,0], solid, ": 비료의 3대 요소중 하나로 물과 격렬하게 반응하는 무른 금속");
   n++;
-  elements[20] = new Element(20, "Ca", "Calcium", "칼슘", 2, 4, m_ae, [2,8,8,2,0,0,0], ": 뼈와 치아의 주성분이 되는 금속");
+  elements[20] = new Element(20, "Ca", "Calcium", "칼슘", 2, 4, m_ae, [2,8,8,2,0,0,0], solid,  ": 뼈와 치아의 주성분이 되는 금속");
   n++;
-  elements[21] = new Element(21, "Sc", "Scandium", "스칸듐", 3, 4, m_tr, [2,8,9,2,0,0,0], ": 멘델레예프가 예언한 원소로 태양처럼 밝은 빛을 내는 희소 금속(전이 금속)");
+  elements[21] = new Element(21, "Sc", "Scandium", "스칸듐", 3, 4, m_tr, [2,8,9,2,0,0,0],  solid, ": 멘델레예프가 예언한 원소로 태양처럼 밝은 빛을 내는 희소 금속(전이 금속)");
   n++;
-  elements[22] = new Element(22, "Ti", "Titanium", "타이타늄", 4, 4, m_tr, [2,8,10,2,0,0,0], ": 금속(전이 금속)");
+  elements[22] = new Element(22, "Ti", "Titanium", "타이타늄", 4, 4, m_tr, [2,8,10,2,0,0,0], solid,  ": 금속(전이 금속)");
   n++;
-  elements[23] = new Element(23, "V", "Vanadium", "바나듐", 5, 4, m_tr, [2,8,11,2,0,0,0], ": 금속(전이 금속)");
+  elements[23] = new Element(23, "V", "Vanadium", "바나듐", 5, 4, m_tr, [2,8,11,2,0,0,0], solid,  ": 금속(전이 금속)");
   n++;
-  elements[24] = new Element(24, "Cr", "Chromium", "크로뮴", 6, 4, m_tr, [2,8,13,1,0,0,0], ": 금속(전이 금속)");
+  elements[24] = new Element(24, "Cr", "Chromium", "크로뮴", 6, 4, m_tr, [2,8,13,1,0,0,0], solid,  ": 금속(전이 금속)");
   n++;
-  elements[25] = new Element(25,"Mn","Manganese","망가니즈 / 망간", 7, 4, m_tr, [2,8,13,2,0,0,0], ": 금속(전이 금속)");
+  elements[25] = new Element(25,"Mn","Manganese","망가니즈 / 망간", 7, 4, m_tr, [2,8,13,2,0,0,0],  solid, ": 금속(전이 금속)");
   n++;
-  elements[26] = new Element(26, "Fe", "Iron (Ferrum)", "철", 8, 4, m_tr, [2,8,14,2,0,0,0],": ");
+  elements[26] = new Element(26, "Fe", "Iron (Ferrum)", "철", 8, 4, m_tr, [2,8,14,2,0,0,0], solid, ": ");
   n++;
- elements[27] = new Element(27, "Co", "Cobalt", "코발트", 9, 4, m_tr, [2,8,15,2,0,0,0], ": ");
+ elements[27] = new Element(27, "Co", "Cobalt", "코발트", 9, 4, m_tr, [2,8,15,2,0,0,0],  solid, ": ");
   n++;
-  elements[28] = new Element(28, "Ni", "Nickel", "니켈", 10, 4, m_tr, [2,8,16,2,0,0,0], ": ");
+  elements[28] = new Element(28, "Ni", "Nickel", "니켈", 10, 4, m_tr, [2,8,16,2,0,0,0],  solid, ": ");
   n++;
-  elements[29] = new Element(29,"Cu","Copper (Cuprum)","구리",11,4, m_tr, [2,8,18,1,0,0,0], ": ");
+  elements[29] = new Element(29,"Cu","Copper (Cuprum)","구리",11,4, m_tr, [2,8,18,1,0,0,0],  solid, ": ");
   n++;
-  elements[30] = new Element(30, "Zn", "Zinc", "아연", 12, 4, m_tr, [2,8,18,2,0,0,0], ": ");
+  elements[30] = new Element(30, "Zn", "Zinc", "아연", 12, 4, m_tr, [2,8,18,2,0,0,0], solid,  ": ");
   n++;
-  elements[31] = new Element(31, "Ga", "Gallium", "갈륨", 13, 4, m_pt, [2,8,18,3,0,0,0], ": ");
+  elements[31] = new Element(31, "Ga", "Gallium", "갈륨", 13, 4, m_pt, [2,8,18,3,0,0,0], solid,  ": ");
    n++;
-  elements[32] = new Element(32, "Ge", "Germanium", "저마늄 / 게르마늄", 14, 4, ml, [2,8,18,4,0,0,0], ": ");
+  elements[32] = new Element(32, "Ge", "Germanium", "저마늄 / 게르마늄", 14, 4, ml, [2,8,18,4,0,0,0],  solid, ": ");
    n++;
-  elements[33] = new Element(33, "As", "Arsenic", "비소", 15, 4, ml, [2,8,18,5,0,0,0], ": ");
+  elements[33] = new Element(33, "As", "Arsenic", "비소", 15, 4, ml, [2,8,18,5,0,0,0],  solid, ": ");
    n++;
-  elements[34] = new Element(34, "Se", "Selenium", "셀레늄", 16, 4, nm_re, [2,8,18,6,0,0,0], ": ");
+  elements[34] = new Element(34, "Se", "Selenium", "셀레늄", 16, 4, nm_re, [2,8,18,6,0,0,0], solid,  ": ");
    n++;
-  elements[35] = new Element(35,"Br","Bromine","브로민",17, 4, nm_ha, [2,8,18,7,0,0,0], ": ");
+  elements[35] = new Element(35,"Br","Bromine","브로민",17, 4, nm_ha, [2,8,18,7,0,0,0], liquid, ": ");
   n++;
-  elements[36] = new Element(36,"Kr","Krypton","크립톤",18, 4, nm_ng, [2,8,18,8,0,0,0], ": ");
+  elements[36] = new Element(36,"Kr","Krypton","크립톤",18, 4, nm_ng, [2,8,18,8,0,0,0], gas, ": ");
   n++;
-  elements[37] = new Element(37,"Rb","Rubidium","루비듐",1, 5, m_al, [2,8,18,8,1,0,0], ": ");
+  elements[37] = new Element(37,"Rb","Rubidium","루비듐",1, 5, m_al, [2,8,18,8,1,0,0],  solid, ": ");
   n++;
-  elements[38] = new Element(38,"Sr","Strontium","스트론튬",2, 5, m_ae, [2,8,18,8,2,0,0],  ": ");
+  elements[38] = new Element(38,"Sr","Strontium","스트론튬",2, 5, m_ae, [2,8,18,8,2,0,0],  solid,  ": ");
   n++;
-  elements[39] = new Element(39,"Y","Yttrium","이트륨",3, 5, m_tr, [2,8,18,9,2,0,0], ": ");
+  elements[39] = new Element(39,"Y","Yttrium","이트륨",3, 5, m_tr, [2,8,18,9,2,0,0],  solid, ": ");
   n++;
-  elements[40] = new Element(40,"Zr","Zirconium","지르코늄",4, 5, m_tr, [2,8,18,10,2,0,0], ": ");
+  elements[40] = new Element(40,"Zr","Zirconium","지르코늄",4, 5, m_tr, [2,8,18,10,2,0,0],  solid, ": ");
   n++;
-  elements[41] = new Element(41,"Nb","Niobium","나이오븀 / 니오븀",5, 5, m_tr, [2,8,18,12,1,0,0],  ": ");
+  elements[41] = new Element(41,"Nb","Niobium","나이오븀 / 니오븀",5, 5, m_tr, [2,8,18,12,1,0,0],  solid,  ": ");
   n++;
-  elements[42] = new Element(42,"Mo","Molybdenum","몰리브데넘",6, 5, m_tr, [2,8,18,13,1,0,0], ": ");
+  elements[42] = new Element(42,"Mo","Molybdenum","몰리브데넘",6, 5, m_tr, [2,8,18,13,1,0,0],  solid, ": ");
   n++;
-  elements[43] = new Element(43,"Tc","Technetium","테크네튬",7, 5, m_tr, [2,8,18,13,2,0,0],  ": ");
+  elements[43] = new Element(43,"Tc","Technetium","테크네튬",7, 5, m_tr, [2,8,18,13,2,0,0],  solid,  ": ");
   n++;
-  elements[44] = new Element(44,"Ru","Ruthenium","루테늄",8, 5, m_tr, [2,8,18,15,1,0,0], ": ");
+  elements[44] = new Element(44,"Ru","Ruthenium","루테늄",8, 5, m_tr, [2,8,18,15,1,0,0], solid,  ": ");
   n++;
   elements[45] = new Element(45,"Rh","Rhodium","로듐",9, 5, m_tr, [2,8,18,16,1,0,0], ": ");
   n++;
-  elements[46] = new Element(46,"Pd","Palladium","팔라듐",10, 5, m_tr, [2,8,18,18,0,0,0], ": ");
+  elements[46] = new Element(46,"Pd","Palladium","팔라듐",10, 5, m_tr, [2,8,18,18,0,0,0], solid,  ": ");
   n++;
-  elements[47] = new Element(47, "Ag", "Silver (Argentum)", "은", 11, 5, m_tr, [2,8,18,18,1,0,0], ": ");
+  elements[47] = new Element(47, "Ag", "Silver (Argentum)", "은", 11, 5, m_tr, [2,8,18,18,1,0,0],  solid, ": ");
   n++;
-  elements[48] = new Element(48, "Cd", "Cadmium", "카드뮴", 12, 5, m_tr, [2,8,18,18,2,0,0],  ": ");
+  elements[48] = new Element(48, "Cd", "Cadmium", "카드뮴", 12, 5, m_tr, [2,8,18,18,2,0,0],  solid,  ": ");
   n++;
-  elements[49] = new Element(49, "In", "Indium", "인듐", 13, 5, m_pt, [2,8,18,18,3,0,0], ": ");
+  elements[49] = new Element(49, "In", "Indium", "인듐", 13, 5, m_pt, [2,8,18,18,3,0,0], solid,  ": ");
   n++;
-  elements[50] = new Element(50, "Sn", "Tin (Stannum)", "주석", 14, 5, m_pt, [2,8,18,18,4,0,0], ": ");
+  elements[50] = new Element(50, "Sn", "Tin (Stannum)", "주석", 14, 5, m_pt, [2,8,18,18,4,0,0], solid,  ": ");
   n++;
-  elements[51] = new Element(51, "Sb", "Antimony (Stilbium)", "안티모니", 15, 5, ml, [2,8,18,18,5,0,0], ": ");
+  elements[51] = new Element(51, "Sb", "Antimony (Stilbium)", "안티모니", 15, 5, ml, [2,8,18,18,5,0,0],  solid, ": ");
   n++;
-  elements[52] = new Element(52, "Te", "Tellurium", "텔루륨", 16, 5, ml, [2,8,18,18,6,0,0],  ": ");
+  elements[52] = new Element(52, "Te", "Tellurium", "텔루륨", 16, 5, ml, [2,8,18,18,6,0,0],  solid,  ": ");
   n++;
-  elements[53] = new Element(53, "I", "Iodine", "아이오딘/요오드", 17, 5, nm_ha, [2,8,18,18,7,0,0], ": ");
+  elements[53] = new Element(53, "I", "Iodine", "아이오딘/요오드", 17, 5, nm_ha, [2,8,18,18,7,0,0],  solid, ": ");
   n++;
-  elements[54] = new Element(54, "Xe", "Xenon", "제논 / 크세논", 18, 5, nm_ng, [2,8,18,18,8,0,0], ": ");
+  elements[54] = new Element(54, "Xe", "Xenon", "제논 / 크세논", 18, 5, nm_ng, [2,8,18,18,8,0,0], gas, ": ");
   n++;
-    elements[55] = new Element(55, "Cs", "Caesium", "세슘", 1, 6, m_al,[2,8,18,18,8,1,0], ": ");
+    elements[55] = new Element(55, "Cs", "Caesium", "세슘", 1, 6, m_al,[2,8,18,18,8,1,0], solid,  ": ");
   n++;
-  elements[56] = new Element(56, "Ba", "Barium", "바륨", 2, 6, m_ae, [2,8,18,18,8,2,0], ": ");
+  elements[56] = new Element(56, "Ba", "Barium", "바륨", 2, 6, m_ae, [2,8,18,18,8,2,0],  solid, ": ");
   n++;
-  elements[57] = new Element(57, "La", "Lanthanum", "란타넘", 3, 6, m_la, [2,8,18,18,9,2,0], ": ");
+  elements[57] = new Element(57, "La", "Lanthanum", "란타넘", 3, 6, m_la, [2,8,18,18,9,2,0],  solid, ": ");
   n++;
-  elements[n] = new Element(58, "Ce", "Cerium", "세륨", 3, 6, m_la, [2,8,18,19,9,2,0], ": ");
+  elements[n] = new Element(58, "Ce", "Cerium", "세륨", 3, 6, m_la, [2,8,18,19,9,2,0],  solid, ": ");
   n++;
-  elements[n] = new Element(59, "Pr", "Praseodymium", "프라세오디뮴", 3, 6, m_la, [2,8,18,21,8,2,0], ": ");
+  elements[n] = new Element(59, "Pr", "Praseodymium", "프라세오디뮴", 3, 6, m_la, [2,8,18,21,8,2,0],  solid, ": ");
   n++;
-  elements[n] = new Element(60, "Nd", "Neodymium", "네오디뮴", 3, 6, m_la, [2,8,18,22,8,2,0], ": ");
+  elements[n] = new Element(60, "Nd", "Neodymium", "네오디뮴", 3, 6, m_la, [2,8,18,22,8,2,0],  solid, ": ");
   n++;
-  elements[n] = new Element(61, "Pm", "Promethium", "프로메튬", 3, 6, m_la, [2,8,18,23,8,2,0], ": ");
+  elements[n] = new Element(61, "Pm", "Promethium", "프로메튬", 3, 6, m_la, [2,8,18,23,8,2,0], solid,  ": ");
   n++;
-  elements[n] = new Element(62, "Sm", "Samarium", "사마륨", 3, 6, m_la, [2,8,18,24,8,2,0], ": ");
+  elements[n] = new Element(62, "Sm", "Samarium", "사마륨", 3, 6, m_la, [2,8,18,24,8,2,0],  solid, ": ");
   n++;
-  elements[n] = new Element(63, "Eu", "Europium", "유로퓸", 3, 6, m_la, [2,8,18,25,8,2,0], ": ");
+  elements[n] = new Element(63, "Eu", "Europium", "유로퓸", 3, 6, m_la, [2,8,18,25,8,2,0], solid,  ": ");
   n++;
-  elements[n] = new Element(64, "Gd", "Gadolinium", "가돌리늄", 3, 6, m_la, [2,8,18,25,9,2,0], ": ");
+  elements[n] = new Element(64, "Gd", "Gadolinium", "가돌리늄", 3, 6, m_la, [2,8,18,25,9,2,0],  solid, ": ");
   n++;
-  elements[n] = new Element(65, "Tb", "Terbium", "터븀", 3, 6, m_la, [2,8,18,27,8,2,0], ": ");
+  elements[n] = new Element(65, "Tb", "Terbium", "터븀", 3, 6, m_la, [2,8,18,27,8,2,0], solid,  ": ");
   n++;
-  elements[n] = new Element(66, "Dy", "Dysprosium", "디스프로슘", 3, 6, m_la, [2,8,18,28,8,2,0], ": ");
+  elements[n] = new Element(66, "Dy", "Dysprosium", "디스프로슘", 3, 6, m_la, [2,8,18,28,8,2,0], solid,  ": ");
   n++;
   elements[n] = new Element(67, "Ho", "Holmium", "홀륨", 3, 6, m_la, [2,8,18,29,8,2,0], ": ");
   n++;
-  elements[n] = new Element(68, "Er", "Erbium", "어븀", 3, 6, m_la, [2,8,18,30,8,2,0], ": ");
+  elements[n] = new Element(68, "Er", "Erbium", "어븀", 3, 6, m_la, [2,8,18,30,8,2,0],  solid, ": ");
   n++;
-  elements[n] = new Element(69, "Tm", "Thulium", "툴륨", 3, 6, m_la, [2,8,18,31,8,2,0], ": ");
+  elements[n] = new Element(69, "Tm", "Thulium", "툴륨", 3, 6, m_la, [2,8,18,31,8,2,0],  solid, ": ");
   n++;
-  elements[n] = new Element(70, "Yb", "Ytterbium", "이터븀", 3, 6, m_la, [2,8,18,32,8,2,0], ": ");
+  elements[n] = new Element(70, "Yb", "Ytterbium", "이터븀", 3, 6, m_la, [2,8,18,32,8,2,0],  solid, ": ");
   n++;
-  elements[n] = new Element(71, "Lu", "Lutetium", "루테튬", 3, 6, m_la, [2,8,18,32,9,2,0], ": ");
+  elements[n] = new Element(71, "Lu", "Lutetium", "루테튬", 3, 6, m_la, [2,8,18,32,9,2,0],  solid, ": ");
   n++;
-  elements[n] = new Element(72, "Hf", "Hafnium", "하프늄", 4, 6, m_tr, [2,8,18,32,10,2,0],  ": ");
+  elements[n] = new Element(72, "Hf", "Hafnium", "하프늄", 4, 6, m_tr, [2,8,18,32,10,2,0],  solid,  ": ");
   n++;
-  elements[n] = new Element(73, "Ta", "Tantalum", "탄탈럼", 5, 6, m_tr, [2,8,18,32,11,2,0],  ": ");
+  elements[n] = new Element(73, "Ta", "Tantalum", "탄탈럼", 5, 6, m_tr, [2,8,18,32,11,2,0],  solid,  ": ");
   n++;
   elements[n] = new Element(74, "W", "Tungsten (Wolfram)", "텅스텐", 6, 6, m_tr, [2,8,18,32,12,2,0], ": ");
   n++;
-  elements[n] = new Element(75, "Re", "Rhenium", "레늄", 7, 6, m_tr, [2,8,18,32,13,2,0], ": ");
+  elements[n] = new Element(75, "Re", "Rhenium", "레늄", 7, 6, m_tr, [2,8,18,32,13,2,0], solid,  ": ");
   n++;
-  elements[n] = new Element(76, "Os", "Osmium", "오스뮴", 8, 6, m_tr, [2,8,18,32,14,2,0], ": ");
+  elements[n] = new Element(76, "Os", "Osmium", "오스뮴", 8, 6, m_tr, [2,8,18,32,14,2,0], solid,  ": ");
   n++;
-  elements[n] = new Element(77, "Ir", "Iridium", "이리듐", 9, 6, m_tr, [2,8,18,32,15,2,0], ": ");
+  elements[n] = new Element(77, "Ir", "Iridium", "이리듐", 9, 6, m_tr, [2,8,18,32,15,2,0],  solid, ": ");
   n++;  
-  elements[n] = new Element(78, "Pt", "Platinum", "백금 / 플래티넘", 10, 6, m_tr, [2,8,18,32,17,1,0], ": ");
+  elements[n] = new Element(78, "Pt", "Platinum", "백금 / 플래티넘", 10, 6, m_tr, [2,8,18,32,17,1,0], solid,  ": ");
   n++;
-  elements[n] = new Element(79, "Au", "Gold (Aurum)", "금", 11, 6, m_tr, [2,8,18,32,18,1,0], ": ");
+  elements[n] = new Element(79, "Au", "Gold (Aurum)", "금", 11, 6, m_tr, [2,8,18,32,18,1,0],  solid, ": ");
   n++;
-  elements[n] = new Element(80,"Hg","Mercury (Hydrargyrum)","수은",12,6, m_tr, [2,8,18,32,18,2,0], ": ");
+  elements[n] = new Element(80,"Hg","Mercury (Hydrargyrum)","수은",12,6, m_tr, [2,8,18,32,18,2,0], liquid, ": ");
   n++;
- elements[n] = new Element(81, "Tl", "Thallium", "탈륨", 13, 6, m_pt, [2,8,18,32,18,3,0], ": ");
+ elements[n] = new Element(81, "Tl", "Thallium", "탈륨", 13, 6, m_pt, [2,8,18,32,18,3,0],  solid, ": ");
   n++;  
-  elements[n] = new Element(82, "Pb", "Lead (Plumbum)", "납", 14, 6, m_pt, [2,8,18,32,18,4,0], ": ");
+  elements[n] = new Element(82, "Pb", "Lead (Plumbum)", "납", 14, 6, m_pt, [2,8,18,32,18,4,0],  solid, ": ");
   n++;
-  elements[n] = new Element(83, "Bi", "Bismuth", "비스무트", 15, 6, m_pt, [2,8,18,32,18,5,0], ": ")
+  elements[n] = new Element(83, "Bi", "Bismuth", "비스무트", 15, 6, m_pt, [2,8,18,32,18,5,0],  solid, ": ")
   n++;
-  elements[n] = new Element(84, "Po", "Polonium", "폴로늄", 16, 6, m_pt, [2,8,18,32,18,6,0], ": ");
+  elements[n] = new Element(84, "Po", "Polonium", "폴로늄", 16, 6, ml, [2,8,18,32,18,6,0],  solid, ": ");
   n++;
   elements[n] = new Element(85, "At", "Astatine", "아스타틴", 17, 6, nm_ha, [2,8,18,32,18,7,0], ": ");
   n++;
-  elements[n] = new Element(86, "Rn", "Radon", "라돈", 18, 6, nm_ng, [2,8,18,32,18,8,0], ": ");
+  elements[n] = new Element(86, "Rn", "Radon", "라돈", 18, 6, nm_ng, [2,8,18,32,18,8,0], gas, ": ");
   n++;
-  elements[n] = new Element(87, "Fr", "Francium", "프랑슘", 1, 7, m_al,[2,8,18,32,18,8,1], ": ");
+  elements[n] = new Element(87, "Fr", "Francium", "프랑슘", 1, 7, m_al,[2,8,18,32,18,8,1],  solid, ": ");
   n++;
-  elements[n] = new Element(88, "Ra", "Radium", "라듐", 2, 7, m_ae, [2,8,18,32,18,8,2], ": ");
+  elements[n] = new Element(88, "Ra", "Radium", "라듐", 2, 7, m_ae, [2,8,18,32,18,8,2],  solid, ": ");
   n++;
-  elements[n] = new Element(89, "Ac", "Actinium", "악티늄", 3, 7, m_ac, [2,8,18,32,18,9,2], ": ");
+  elements[n] = new Element(89, "Ac", "Actinium", "악티늄", 3, 7, m_ac, [2,8,18,32,18,9,2], solid,  ": ");
   n++;
-  elements[n] = new Element(90, "Th", "Thorium", "토륨", 3, 7, m_ac, [2,8,18,32,18,10,2], ": ");
+  elements[n] = new Element(90, "Th", "Thorium", "토륨", 3, 7, m_ac, [2,8,18,32,18,10,2],  solid, ": ");
   n++;
-  elements[n] = new Element(91, "Pa", "Protactinium", "프로트악티늄", 3, 7, m_ac, [2,8,18,32,20,9,2], ": ");
+  elements[n] = new Element(91, "Pa", "Protactinium", "프로트악티늄", 3, 7, m_ac, [2,8,18,32,20,9,2],  solid, ": ");
   n++;
-  elements[n] = new Element(92, "U", "Uranium", "우라늄", 3, 7, m_ac, [2,8,18,32,21,9,2], ": ");
+  elements[n] = new Element(92, "U", "Uranium", "우라늄", 3, 7, m_ac, [2,8,18,32,21,9,2],  solid, ": ");
   n++;
-  elements[n] = new Element(93, "Np", "Neptunium", "넵투늄", 3, 7, m_ac, [2,8,18,32,22,9,2], ": ");
+  elements[n] = new Element(93, "Np", "Neptunium", "넵투늄", 3, 7, m_ac, [2,8,18,32,22,9,2], solid,  ": ");
   n++;
-  elements[n] = new Element(94, "Pu", "Plutonium", "플루토늄", 3, 7, m_ac, [2,8,18,32,24,8,2], ": ");
+  elements[n] = new Element(94, "Pu", "Plutonium", "플루토늄", 3, 7, m_ac, [2,8,18,32,24,8,2],  solid, ": ");
   n++;
-  elements[n] = new Element(95, "Am", "Americium", "아메리슘", 3, 7,  m_ac, [2,8,18,32,25,8,2], ": ");
+  elements[n] = new Element(95, "Am", "Americium", "아메리슘", 3, 7,  m_ac, [2,8,18,32,25,8,2],  solid, ": ");
   n++;
-  elements[n] = new Element(96, "Cm", "Curium", "퀴륨", 3, 7, m_ac, [2,8,18,32,25,9,2], ": ");
+  elements[n] = new Element(96, "Cm", "Curium", "퀴륨", 3, 7, m_ac, [2,8,18,32,25,9,2], solid,  ": ");
   n++;
-  elements[n] = new Element(97, "Bk", "Berkelium", "버클륨", 3, 7, m_ac,[2,8,18,32,27,8,2],  ": ");
+  elements[n] = new Element(97, "Bk", "Berkelium", "버클륨", 3, 7, m_ac,[2,8,18,32,27,8,2],  solid,  ": ");
   n++;
-  elements[n] = new Element(98, "Cf", "Californium", "캘리포늄", 3, 7, m_ac, [2,8,18,32,28,8,2], ": ");
+  elements[n] = new Element(98, "Cf", "Californium", "캘리포늄", 3, 7, m_ac, [2,8,18,32,28,8,2],  solid, ": ");
   n++;
-  elements[n] = new Element(99, "Es", "Einsteinium", "아인슈타이늄", 3, 7, m_ac, [2,8,18,32,29,8,2], ": ");
+  elements[n] = new Element(99, "Es", "Einsteinium", "아인슈타이늄", 3, 7, m_ac, [2,8,18,32,29,8,2],  solid, ": ");
   n++;
-  elements[n] = new Element(100, "Fm", "Fermium", "페르뮴", 3, 7, m_ac,[2,8,18,32,30,8,2],  ": ");
+  elements[n] = new Element(100, "Fm", "Fermium", "페르뮴", 3, 7, m_ac,[2,8,18,32,30,8,2],  solid,  ": ");
   n++;
-  elements[n] = new Element(101, "Md", "Mendelevium", "멘델레븀", 3, 7, m_ac, [2,8,18,32,31,8,2], ": ");
+  elements[n] = new Element(101, "Md", "Mendelevium", "멘델레븀", 3, 7, m_ac, [2,8,18,32,31,8,2], solid,  ": ");
   n++;
-  elements[n] = new Element(102, "No", "Nobellium", "노벨륨", 3, 7, m_ac, [2,8,18,32,32,8,2], ": ");
+  elements[n] = new Element(102, "No", "Nobellium", "노벨륨", 3, 7, m_ac, [2,8,18,32,32,8,2],  solid, ": ");
   n++;
-  elements[n] = new Element(103, "Lr", "Lawrencium", "로렌슘", 3, 7, m_ac, [2,8,18,32,32,8,3], ": ");
+  elements[n] = new Element(103, "Lr", "Lawrencium", "로렌슘", 3, 7, m_ac, [2,8,18,32,32,8,3], solid,  ": ");
   n++;
-  elements[n] = new Element(104, "Rf", "Rutherfordium", "러더포듐", 4, 7, m_tr, [2,8,18,32,32,10,2], ": ");
+  elements[n] = new Element(104, "Rf", "Rutherfordium", "러더포듐", 4, 7, m_tr, [2,8,18,32,32,10,2],  solid, ": ");
   n++;
-  elements[n] = new Element(105, "Db", "Dubnium", "더브늄", 5, 7, m_tr, [2,8,18,32,32,11,2], ": ");
+  elements[n] = new Element(105, "Db", "Dubnium", "더브늄", 5, 7, m_tr, [2,8,18,32,32,11,2],  solid, ": ");
   n++;
-  elements[n] = new Element(106, "Sg", "Seaborgium", "시보귬", 6, 7, m_tr, [2,8,18,32,32,12,2], ": ");
+  elements[n] = new Element(106, "Sg", "Seaborgium", "시보귬", 6, 7, m_tr, [2,8,18,32,32,12,2],  solid, ": ");
   n++;
-  elements[n] = new Element(107, "Bh", "Bohrium", "보륨", 7, 7, m_tr, [2,8,18,32,32,13,2], ": ");
+  elements[n] = new Element(107, "Bh", "Bohrium", "보륨", 7, 7, m_tr, [2,8,18,32,32,13,2],  solid, ": ");
   n++;
-  elements[n] = new Element(108, "Hs", "Hassium", "하슘", 8, 7, m_tr, [2,8,18,32,32,14,2], ": ");
+  elements[n] = new Element(108, "Hs", "Hassium", "하슘", 8, 7, m_tr, [2,8,18,32,32,14,2], solid,  ": ");
   n++;
-  elements[n] = new Element(109, "Mt", "Meitnerium", "마이트너륨", 9, 7, m_tr,[2,8,18,32,32,15,2], ": ");
+  elements[n] = new Element(109, "Mt", "Meitnerium", "마이트너륨", 9, 7, m_tr,[2,8,18,32,32,15,2], solid,  ": ");
   n++;
-  elements[n] = new Element(110, "Ds", "Darmstadtium", "다름슈타튬", 10, 7, m_tr, [2,8,18,32,32,16,2], ": ");
+  elements[n] = new Element(110, "Ds", "Darmstadtium", "다름슈타튬", 10, 7, m_tr, [2,8,18,32,32,16,2], solid,  ": ");
   n++;
-  elements[n] = new Element(111, "Rg", "Roentgenium", "뢴트게늄", 11, 7, m_tr, [2,8,18,32,32,17,2],": ");
+  elements[n] = new Element(111, "Rg", "Roentgenium", "뢴트게늄", 11, 7, m_tr, [2,8,18,32,32,17,2], solid, ": ");
   n++;
-  elements[n] = new Element(112, "Cn", "Copernicium", "코페르니슘", 12, 7, m_tr, [2,8,18,32,32,18,2], ": ");
+  elements[n] = new Element(112, "Cn", "Copernicium", "코페르니슘", 12, 7, m_tr, [2,8,18,32,32,18,2], solid,  ": ");
   n++;
-  elements[n] = new Element(113, "Nh", "Nihonium", "니호늄", 13, 7, m_pt, [2,8,18,32,32,18,3], ": ");
+  elements[n] = new Element(113, "Nh", "Nihonium", "니호늄", 13, 7, m_pt, [2,8,18,32,32,18,3], solid,  ": ");
   n++;
-  elements[n] = new Element(114, "Fl", "Flerovium", "플레로븀", 14, 7, m_pt, [2,8,18,32,32,18,4], ": ");
+  elements[n] = new Element(114, "Fl", "Flerovium", "플레로븀", 14, 7, m_pt, [2,8,18,32,32,18,4], solid,  ": ");
   n++;
   elements[n] = new Element(115, "Mc", "Moscovium", "모스코븀", 15, 7, m_pt, [2,8,18,32,32,18,5], ": ");
   n++;
-  elements[n] = new Element(116, "Lv", "Livermorium", "리버모륨", 16, 7, m_pt, [2,8,18,32,32,18,6], ": ");
+  elements[n] = new Element(116, "Lv", "Livermorium", "리버모륨", 16, 7, m_pt, [2,8,18,32,32,18,6], solid,  ": ");
   n++;
-  elements[n] = new Element(117, "Ts", "Tennessine", "테네신", 17, 7, nm_ha, [2,8,18,32,32,18,7], ": ");
+  elements[n] = new Element(117, "Ts", "Tennessine", "테네신", 17, 7, nm_ha, [2,8,18,32,32,18,7], solid,  ": ");
   n++;
-  elements[n] = new Element(118, "Og", "Oganesson", "오가네손", 18, 7, nm_ng, [2,8,18,32,32,18,8], ": ");
+  elements[n] = new Element(118, "Og", "Oganesson", "오가네손", 18, 7, nm_ng, [2,8,18,32,32,18,8], solid,  ": ");
   n++;
   // label_la, m_la
-  elements[n] = new Element(57, "-71", "Lanthanide", "란타넘족", 3, 6, label_la, [0,0,0,0,0,0,0], ": ");
+  elements[n] = new Element(57, "-71", "Lanthanide", "란타넘족", 3, 6, label_la, [0,0,0,0,0,0,0], solid,  ": ");
   n++;
- elements[n] = new Element(89, "-103", "Actinide", "악티늄족", 3, 7, label_ac, [0,0,0,0,0,0,0], ": ");
+ elements[n] = new Element(89, "-103", "Actinide", "악티늄족", 3, 7, label_ac, [0,0,0,0,0,0,0], solid, ": ");
   n++;
 
 }
