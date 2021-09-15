@@ -210,7 +210,7 @@ function draw() {
   background(220);
   
   showLabel() ;  // Period, Group Label
-  showSeries(); 
+  
   
   // 금속 / 비금속 가로 상자 표지
   for(let i=0; i < 2; i++){
@@ -272,6 +272,8 @@ function draw() {
       }
     }
   }
+  
+  showSeries(); 
   if(bLoop.checked == false){ 
     noLoop();
   }
@@ -435,13 +437,11 @@ class Element {
       if(this.phase == gas)
       {
           fill(255,0,0);  
-          
       } else if (this.phase == liquid) {
           fill(0,0,255); 
       } else {
           fill(255);
       }
-        
       
       text(this.s,this.x+5,this.y + 30);
   
@@ -642,25 +642,29 @@ function showIon(id,shell){
   // proton, neutron
   fill(125);
   circle(0,0,25); 
-  textSize(10);
-  fill(0);
-  textAlign(CENTER, CENTER);
-  text(elements[id].s,0,0);  // atom number
-  textAlign(LEFT);
   textSize(13);
+  fill(255);
+  textStyle(BOLD);
+  textAlign(CENTER, CENTER);
+  text(elements[id].s,-3,3);  // atom symbol
+  
+  textAlign(LEFT,BASELINE);
+  fill(0);
+  
   if( eIon < 4 && id != 2 ) { 
     if( eIon >1 ) {
-      text(eIon + "+", 2,-8);
+      text(eIon + "+", 2,-4);
     } else {
-      text(" +", 2,-8);
+      text(" +", 2,-4);
     }
     
   } else if ( 5 <= eIon && eIon <= 7  ) {
     let fe = 8 -eIon;
+   
     if( fe >1 ){
-      text(fe + "-", 2,-8);
+      text(fe + "-", 2,-4);
     } else {
-      text("-", 2,-8);
+      text("-", 2,-4);
     }
     
   } else if ( eIon == 4) {
