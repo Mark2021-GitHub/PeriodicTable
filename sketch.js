@@ -660,7 +660,6 @@ function showIon(id,shell){
     
   } else if ( 5 <= eIon && eIon <= 7  ) {
     let fe = 8 -eIon;
-   
     if( fe >1 ){
       text(fe + "-", 2,-4);
     } else {
@@ -668,6 +667,9 @@ function showIon(id,shell){
     }
     
   } else if ( eIon == 4) {
+    text(eIon + "+", 2,-4);
+    text(eIon + "-", 2,-15);
+    
   } else if ( eIon == 8) {
   }
   
