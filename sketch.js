@@ -210,19 +210,6 @@ function draw() {
   background(220);
   
   showLabel() ;  // Period, Group Label
-  for (let i = 1; i < n; i++) {
-   
-    if( elements[i].contains(mouseX, mouseY) ){
-      dtText.innerText = elements[i].str;
-      ddText.innerText = elements[i].desc;
-      showAtom(elements[i].id, elements[i].shell);
-      showBox(i);
-      elements[i].show(true);
-    } else {
-      elements[i].show(false);
-    }
-  }
-  
   showSeries(); 
   
   // 금속 / 비금속 가로 상자 표지
@@ -258,10 +245,36 @@ function draw() {
   
   
   if(bLoop.checked == false){ 
+    for (let i = 1; i < n; i++) {
+      if( elements[i].contains(mouseX, mouseY) ){
+        dtText.innerText = elements[i].str;
+        ddText.innerText = elements[i].desc;
+        showAtom(elements[i].id, elements[i].shell);
+        showBox(i);
+        elements[i].show(true);
+      } else {
+        elements[i].show(false);
+      }
+    }
     showAtom(elements[next].id, elements[next].shell);
     showBox(next); 
+  } else {
+    for (let i = 1; i < n; i++) {
+   
+      if( elements[i].contains(mouseX, mouseY) ){
+        dtText.innerText = elements[i].str;
+        ddText.innerText = elements[i].desc;
+        showIon(elements[i].id, elements[i].shell);
+        showBox(i);
+        elements[i].show(true);
+      } else {
+        elements[i].show(false);
+      }
+    }
+  }
+  if(bLoop.checked == false){ 
     noLoop();
-  }    
+  }
 }
 
 function showSeries() {
@@ -519,6 +532,146 @@ function showBox(id) {
 let atomx = 10*w+20;
 let atomy = 3*h+10;
 
+
+
+function showIon(id,shell){
+  let eIon = 0; 
+  push();
+  translate(atomx,atomy);
+  
+  // atom's background
+  fill(255);
+  noStroke();
+  circle(0,0,180); 
+  
+  for(let s=0; s<7; s++) { 
+      let e = shell[s]; 
+      if(e == 0 ) break;
+     
+      noFill();
+      stroke(100);
+      let orbit = (s+2)*20; // orbit diameter;
+      circle(0,0, orbit); // show shell orbit
+     
+      let angle = TWO_PI/e;
+      let theta = 0;
+      let r = orbit/2;
+      let ex = r*cos(0);
+      let ey = r*sin(0);
+    
+    // if this is outermost shell
+      if( shell[s+1] ==0 || s == 6) {
+          eIon = shell[s];
+          
+         if( eIon < 4 && id != 2) { 
+             noFill (); 
+             for(let ei=0; ei<e; ei++){
+                push();
+                ex = r*cos(theta);
+                ey = r*sin(theta);
+                translate(ex, ey);
+                circle(0,0,5);
+                pop();
+                theta += angle;
+            }  
+            fill(255,0,0);  
+            let rb = 90;
+             theta = 0;
+            for(let ei=0; ei<e; ei++){
+                push();
+                ex = rb*cos(theta);
+                ey = rb*sin(theta);
+                translate(ex, ey);
+                circle(0,0,5);
+                pop();
+                theta += angle;
+            }
+        } else if ( 5 <= eIon && eIon <= 7  ) {
+          let fe = 8 - e;
+          angle = TWO_PI/8;
+           
+          for(let ei=0; ei<8; ei++){
+              if(ei<e) {
+                fill(255,0,0);  
+              } else {
+                fill(255,255,0);  
+              }
+                push();
+                ex = r*cos(theta);
+                ey = r*sin(theta);
+                translate(ex, ey);
+                circle(0,0,5);
+                pop();
+                theta += angle;
+            }  
+        } else { // eIon = 4, 8
+          fill(255,0,0);  
+          for(let ei=0; ei<e; ei++){
+                push();
+                ex = r*cos(theta);
+                ey = r*sin(theta);
+                translate(ex, ey);
+                circle(0,0,5);
+                pop();
+                theta += angle;
+            }  
+        }
+      } else {
+        fill(0,200,255);  
+        for(let ei=0; ei<e; ei++){
+            push();
+            ex = r*cos(theta);
+            ey = r*sin(theta);
+            translate(ex, ey);
+            circle(0,0,5);
+            pop();
+            theta += angle;
+        }  
+      }
+    
+    
+    
+    
+      
+      
+     
+  }
+  
+ 
+  
+  // proton, neutron
+  fill(125);
+  circle(0,0,25); 
+  textSize(10);
+  fill(0);
+  textAlign(CENTER, CENTER);
+  text(elements[id].s,0,0);  // atom number
+  textAlign(LEFT);
+  textSize(13);
+  if( eIon < 4 && id != 2 ) { 
+    if( eIon >1 ) {
+      text(eIon + "+", 2,-8);
+    } else {
+      text(" +", 2,-8);
+    }
+    
+  } else if ( 5 <= eIon && eIon <= 7  ) {
+    let fe = 8 -eIon;
+    if( fe >1 ){
+      text(fe + "-", 2,-8);
+    } else {
+      text("-", 2,-8);
+    }
+    
+  } else if ( eIon == 4) {
+  } else if ( eIon == 8) {
+  }
+  
+  
+  pop();
+       
+}
+
 function showAtom(id,shell){
   push();
   translate(atomx,atomy);
@@ -531,7 +684,8 @@ function showAtom(id,shell){
   textSize(10);
   fill(255);
   textAlign(CENTER, CENTER);
-  text("+"+id,0,0);  // atom number
+  text(id,0,0);  // atom number
+  
   for(let s=0; s<7; s++) { // shell number = s+1;
       let e = shell[s]; 
       if( e > 0 ) { // e = number of electrons
@@ -552,9 +706,9 @@ function showAtom(id,shell){
           translate(ex, ey);
           // if this is outermost shell
           if( shell[s+1] ==0 || s == 6) {
-           fill(255,255,0);   
+           fill(255,0,0);   
           } else {
-           fill(0);  
+           fill(0,200,255);  
           }
           
           circle(0,0,5);
@@ -819,16 +973,16 @@ function mousePressed() {
 }
 
 function setupElement() {
-  elements[1] = new Element(1, "H", "Hydrogen", "수소", 1, 1, nm_re, [1,0,0,0,0,0,0], gas, ": 가장 가볍고 불에 타기 쉬운 기체");
+  elements[1] = new Element(1, "H", "Hydrogen", "수소", 1, 1, nm_re, [1,0,0,0,0,0,0], gas, "우주와 생명의 근원: 가장 가벼운 기체");
   n++;
-  elements[2] = new Element(2, "He", "Helium", "헬륨", 18, 1, nm_ng, [2,0,0,0,0,0,0], gas, ": 풍선을 뜨게하는 가벼운 기체");
+  elements[2] = new Element(2, "He", "Helium", "헬륨", 18, 1, nm_ng, [2,0,0,0,0,0,0], gas, "안전하게 비행선을 뜨게하는 두 번째로 가벼운 기체");
   n++;
-  elements[3] = new Element(3, "Li", "Lithium", "리튬", 1, 2,  m_al, [2,1,0,0,0,0,0], solid, ": 대용량, 고효율의 리튬이온 전지에 사용되는 가장 가벼운 금속");
+  elements[3] = new Element(3, "Li", "Lithium", "리튬", 1, 2,  m_al, [2,1,0,0,0,0,0], solid, "대용량, 고효율의 리튬이온 전지에 사용되는 가장 가벼운 금속");
   n++;
   elements[4] = new Element(4, "Be", "Beryllium", 
-                            "베릴륨", 2, 2, m_ae, [2,2,0,0,0,0,0], solid, ": 알루미늄보다 가볍고 강철보다 단단한 금속");
+                            "베릴륨", 2, 2, m_ae, [2,2,0,0,0,0,0], solid, "알루미늄보다 가볍고 강철보다 단단한 금속");
   n++;
-  elements[5] = new Element(5, "B", "Boron", "붕소", 13, 2, ml, [2,3,0,0,0,0,0], solid, ": 불에 타기 어려워 내열유리, 로켓 엔진 노즐등에 사용되는 반금속");
+  elements[5] = new Element(5, "B", "Boron", "붕소", 13, 2, ml, [2,3,0,0,0,0,0], solid, "불에 타기 어려워 내열유리, 로켓 엔진 노즐등에 사용되는 반금속");
   n++;
   elements[6] = new Element(6, "C", "Carbon", "탄소", 14, 2, nm_re,[2,4,0,0,0,0,0], solid, ": 다이아몬드, 연필심, 유기화합물을 이루는 생명의 원소");
   n++;
