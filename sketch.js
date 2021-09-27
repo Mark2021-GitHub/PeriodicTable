@@ -1002,7 +1002,7 @@ function setupElement() {
   n++;
   elements[11] = new Element(11,"Na","Sodium (Natrium)","소듐 / 나트륨",1,3, m_al, [2,8,1,0,0,0,0], solid, ": 바닷물 속 소금에 풍부하게 존재하는 무른 금속");
   n++;
-  elements[12] = new Element(12,"Mg","Magnesium","마그네슘",2,3, m_ae, [2,8,2,0,0,0,0],  solid, ": 쉽게 불에 타면서 밝은 백색광을 내고, 경량,고강도의 첨단 합금 소재 금속");
+  elements[12] = new Element(12,"Mg","Magnesium","마그네슘",2,3, m_ae, [2,8,2,0,0,0,0],  solid, "연소할 때 밝은 백색광을 내므로 섬광탄, 폭죽, 초창기 카메라 플래쉬 등으로 활용되는 금속, 탄산마그네슘 화합물은 습기 제거 기능이 있어서 각종 스포츠, 암벽 등반가들이 손에 바르는 분말");
   n++;
   elements[13] = new Element(13,"Al","Aluminium","알루미늄",13,3, m_pt, [2,8,3,0,0,0,0],  solid, ": 가볍고, 열 전도성이 좋아 다양한 합금 소재로 산업에서 널리 활용되는 금속");
   n++;
@@ -1018,7 +1018,7 @@ function setupElement() {
   n++;
   elements[19] = new Element(19, "K","Potassium (Kalium)","포타슘 / 칼륨",1,4, m_al, [2,8,8,1,0,0,0], solid, ": 비료의 3대 요소중 하나로 물과 격렬하게 반응하는 무른 금속");
   n++;
-  elements[20] = new Element(20, "Ca", "Calcium", "칼슘", 2, 4, m_ae, [2,8,8,2,0,0,0], solid,  ": 뼈와 치아의 주성분이 되는 금속");
+  elements[20] = new Element(20, "Ca", "Calcium", "칼슘", 2, 4, m_ae, [2,8,8,2,0,0,0], solid,  "시멘트와 대리석, 뼈와 치아의 주성분이 되는 금속. 황산칼슘은 두부 응고제로, 탄산칼슘은 분필로, 염화칼슘은 제설제로, 인산칼슘은 인공치아나 뼈 등으로 사용되는 등 실생활에 유용한 다양한 칼슘 화합물이 존재.");
   n++;
   elements[21] = new Element(21, "Sc", "Scandium", "스칸듐", 3, 4, m_tr, [2,8,9,2,0,0,0],  solid, ": 멘델레예프가 예언한 원소로 태양처럼 밝은 빛을 내는 희소 금속(전이 금속)");
   n++;
@@ -1048,7 +1048,7 @@ function setupElement() {
    n++;
   elements[34] = new Element(34, "Se", "Selenium", "셀레늄", 16, 4, nm_re, [2,8,18,6,0,0,0], solid,  ": ");
    n++;
-  elements[35] = new Element(35,"Br","Bromine","브로민",17, 4, nm_ha, [2,8,18,7,0,0,0], liquid, ": ");
+  elements[35] = new Element(35,"Br","Bromine","브로민",17, 4, nm_ha, [2,8,18,7,0,0,0], liquid, "악취가 나는 액체라서 그리스어 bromos(악취)에서 이름이 유래된 원소. 필름 사진을 현상할 때 쓰는 감광제가 AgBr 즉 브로민화은 화합물이라서, 인기 배우 등의 커다란 포스터를 영어로 '브로마이드'(브로민화물)라고 부름.");
   n++;
   elements[36] = new Element(36,"Kr","Krypton","크립톤",18, 4, nm_ng, [2,8,18,8,0,0,0], gas, ": ");
   n++;
@@ -1072,7 +1072,7 @@ function setupElement() {
   n++;
   elements[46] = new Element(46,"Pd","Palladium","팔라듐",10, 5, m_tr, [2,8,18,18,0,0,0], solid,  ": ");
   n++;
-  elements[47] = new Element(47, "Ag", "Silver (Argentum)", "은", 11, 5, m_tr, [2,8,18,18,1,0,0],  solid, ": ");
+  elements[47] = new Element(47, "Ag", "Silver (Argentum)", "은", 11, 5, m_tr, [2,8,18,18,1,0,0],  solid, "모든 금속중 열전도도가 가장 좋고 전기전도도도 매우 뛰어난 금속. 세균, 박테리아 등을 박멸하는 항균성이 뛰어나서 나노입자 형태로 공기/물 정화, 섬유 등 항균 기능을 위해 사용된다.");
   n++;
   elements[48] = new Element(48, "Cd", "Cadmium", "카드뮴", 12, 5, m_tr, [2,8,18,18,2,0,0],  solid,  ": ");
   n++;
@@ -1090,7 +1090,7 @@ function setupElement() {
   n++;
     elements[55] = new Element(55, "Cs", "Caesium", "세슘", 1, 6, m_al,[2,8,18,18,8,1,0], solid,  ": ");
   n++;
-  elements[56] = new Element(56, "Ba", "Barium", "바륨", 2, 6, m_ae, [2,8,18,18,8,2,0],  solid, ": ");
+  elements[56] = new Element(56, "Ba", "Barium", "바륨", 2, 6, m_ae, [2,8,18,18,8,2,0],  solid, "희고 걸쭉한 황산바륨 화합물은 엑스선을 잘 흡수하고, 먹어도 소화 효소에 의해 분해되지 않아서 위장 엑스선 진단을 할 때 조영제로 사용된다. 황산바륨을 제외한 다른 모든 바륨 화합물들은 독성이 있어서 산업적으로만 쓰인다. 탄산바륨은 유리제조, 도자기 유약 등으로 사용된다.");
   n++;
   elements[57] = new Element(57, "La", "Lanthanum", "란타넘", 3, 6, m_la, [2,8,18,18,9,2,0],  solid, ": ");
   n++;
@@ -1142,7 +1142,7 @@ function setupElement() {
   n++;
  elements[n] = new Element(81, "Tl", "Thallium", "탈륨", 13, 6, m_pt, [2,8,18,32,18,3,0],  solid, ": ");
   n++;  
-  elements[n] = new Element(82, "Pb", "Lead (Plumbum)", "납", 14, 6, m_pt, [2,8,18,32,18,4,0],  solid, ": ");
+  elements[n] = new Element(82, "Pb", "Lead (Plumbum)", "납", 14, 6, m_pt, [2,8,18,32,18,4,0],  solid, "녹는점(327도)이 낮고 무르고 가공하기 쉬워 고대부터 수도관, 식기 등 수많은 일상용품에 유용하게 사용된 금속. 20세기 중반에 납의 유독성과 중독 증상이 밝혀져 지금은 일상용품으로는 사용이 엄격하게 제한됨.");
   n++;
   elements[n] = new Element(83, "Bi", "Bismuth", "비스무트", 15, 6, m_pt, [2,8,18,32,18,5,0],  solid, ": ")
   n++;
