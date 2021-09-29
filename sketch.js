@@ -188,7 +188,7 @@ var cnv;
 
 function centerCanvas() {
   var x = (windowWidth - width) / 2;
-  var y = dtText.offsetTop + 100  ;
+  var y = dtText.offsetTop + 120  ;
   cnv.position(x, y);
 }
 function windowResized() {
