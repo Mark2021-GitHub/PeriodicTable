@@ -75,7 +75,8 @@ let gas=2;
 
 var inputForm = document.querySelector("form");
 var inputTxt = document.querySelector(".txt");
-var playNextBtton = document.getElementById("playNext");
+var playNextButton = document.getElementById("playNext");
+var searchButton = document.getElementById("search");
 var radioMute = document.getElementById("mute");
 var radioEn = document.getElementById("en");
 var radioKo = document.getElementById("ko");
@@ -169,8 +170,8 @@ function setupCSBox() {
   csbox[0] = new csBox(l, t, vs*6-3, 20, "금속", m, font1, "[금속,Metals]은 일반적으로 상온에서 고체 상태로 존재하며, 특유의 광택을 띠고 열과 전기를 잘 전달하는 도체로, 연성과 전성을 갖는다. 주기율표 상에 위치하는 118개의 원소 중 대략 4분의 3 정도가 일반적인 금속의 정의에 해당된다. 보통 금속 원소는 전자를 잃고 양이온이 되기 쉬우며, 비금속은 반대로 전자를 얻기 쉽다.");
   csbox[1] = new csBox(l+vs*7, t, vs*3, 20, "비금속", nm, font1,"[Nonmetals]");
   csbox[2] = new csBox(l+vs*6, t, vw, vh-30, "준금속", ml,font2, "[준금속,  Metalloids]은 금속과 비금속의 경계에 있어서 중간 성질을 띄는 화학 원소 계열이다. 일반적으로 5-B, 14-Si, 32-Ge, 33-As 51-Sb, 52-Te, 84-Po 를 준금속으로 분류한다.");
-    csbox[3] = new csBox(l, vy, vw, vh, "알칼리 금속", m_al,font2, ": 물과 반응해 염기성 용액을 만드는 높은 반응성을 가진 금속");
-  csbox[4] = new csBox(l+vs, vy, vw, vh, "알칼리 토금속", m_ae, font2, "존재량이 풍부해 다양한 분야에서 활용되는 높은 반응성의 금속");
+    csbox[3] = new csBox(l, vy, vw, vh, "알칼리 금속", m_al,font2, "수소를 제외한 1족 원소들은 알칼리 금속(alkali metal)이라고 불린다. 물과 반응해 염기성 용액을 만들고, 높은 반응성을 가진 금속들이다.");
+  csbox[4] = new csBox(l+vs, vy, vw, vh, "알칼리 토금속", m_ae, font2, "2족은 알칼리 토금속(alkali earth metal)이라고 불린다. 물과 반응해 염기성 용액을 생성하지만 반응성이 낮아 폭발하지는 않는다.");
    csbox[5] = new csBox(l+vs*4, vy+20, vw, vh-20, "전이 금속", m_tr,font2, "[Metals - Transition metals]"); 
   csbox[6] = new csBox(l+vs*5, vy, vw, vh, "전이후 금속", m_pt,font2, "[Metals - Post-transition metals]");
   csbox[7] = new csBox(l+vs*2, vy+30, vw, vh-30, "란타넘족", m_la,font2, "[Metals - Lanthanide]"); 
@@ -179,7 +180,7 @@ function setupCSBox() {
   csbox[10] = new csBox(l+vs*8, vy, vw, vh, "할로젠", nm_ha,font2, "Group 17: Halogen - 1가 음이온이 되는 원소들로 1족 원소(1가 양이온)들과 격렬하게 반응하여 염을 생성");
    csbox[11] = new csBox(l+vs*9, vy, vw, vh, "비활성 기체", nm_ng,font2, "Group 18: Noble gas - 불활성 기체라고도 하는 18족 원소들은 최외각 전자껍질이 완전히 채워져 있어 반응성이 매우 낮고, 상온에서 모두 기체 상태로 존재, 물질의 보호에 널리 사용");
   
-  repbox = new csBox(l, t-30, vs*10, 20, "전형원소", rep,font1, "[주족원소 主族元素, Main-group element] 라고도 불리는 1~2족, 13~18족 원소들로 족별 성질이 극명하게 드러나는 대표적인 원소들을 의미");
+  repbox = new csBox(l, t-30, vs*10, 20, "전형원소", rep,font1, "전형원소(Typical element 또는 Main-group element) 는 1~2족, 13~18족 원소들로 족별로 유사한 성질을 보이는 원소들을 의미한다.");
 
   
 }  
@@ -765,8 +766,27 @@ function fc(ptclass)
 
 
 
-playNextBtton.onclick = function (){
+playNextButton.onclick = function (){
   playNext();
+}
+
+searchButton.onclick = function (){
+  search();
+}
+
+function search(){
+  //print(inputTxt.value);
+  let regexp = inputTxt.value;
+  
+  for (let i = 1; i < n; i++) {
+    let m = match(elements[i].str, regexp); 
+    if( m != null ){
+    //    print ("Found:" + elements[i].str);
+        next = i;
+        playNext();
+        break;
+    }      
+  }
 }
 
 let isNext = false;
@@ -1052,7 +1072,7 @@ function setupElement() {
   n++;
   elements[36] = new Element(36,"Kr","Krypton","크립톤",18, 4, nm_ng, [2,8,18,8,0,0,0], gas, ": ");
   n++;
-  elements[37] = new Element(37,"Rb","Rubidium","루비듐",1, 5, m_al, [2,8,18,8,1,0,0],  solid, ": ");
+  elements[37] = new Element(37,"Rb","Rubidium","루비듐",1, 5, m_al, [2,8,18,8,1,0,0],  solid, "루비듐은 분제 버너를 이용한 불꽃 반응을 분광기로 관찰하여 최초로 발견된 원소로 불꽃 반응의 붉은색을 뜻하는 라틴어(rubidus)로 이름을 지었다. 루비듐 원자 시계는 , 세슘 원자 시계보다 정밀도는 떨어지지만(그래도 30만년에 1초 오차, 세슘은 3000만년에 1초 오차) 저렴하고 소형화하기 쉬워 통신 장비와 위성, GPS 등에서 사용되는 원자 시계이다. ");
   n++;
   elements[38] = new Element(38,"Sr","Strontium","스트론튬",2, 5, m_ae, [2,8,18,8,2,0,0],  solid,  ": ");
   n++;
@@ -1074,9 +1094,9 @@ function setupElement() {
   n++;
   elements[47] = new Element(47, "Ag", "Silver (Argentum)", "은", 11, 5, m_tr, [2,8,18,18,1,0,0],  solid, "모든 금속중 열전도도가 가장 좋고 전기전도도도 매우 뛰어난 금속. 세균, 박테리아 등을 박멸하는 항균성이 뛰어나서 나노입자 형태로 공기/물 정화, 섬유 등 항균 기능을 위해 사용된다.");
   n++;
-  elements[48] = new Element(48, "Cd", "Cadmium", "카드뮴", 12, 5, m_tr, [2,8,18,18,2,0,0],  solid,  "1급 발암물질: 1910년 일본 진즈가와 유역에서 발생한 이타이이타이병(아파아파병)으로 수많은 농가 주민이 원인 모를 고통을 호소하다 뼈가 굽고 부서져 죽어 갔는데 나중에 근처 금속 광업 공장 폐수에 있던 카드뮴 때문이라는 사실이 밝혀진다. 카드뮴은 아연과 같은 족 원소라 성질이 비슷해서 우리 몸 안에서 아연의 자리를 차지하고 효소의 활동을 방해하는 것이다. 인체에는 매우 유해하지만 페인트 도료나, 합금, 양자점, 전지등 첨단 산업 소재로 널리 쓰인다. ");
+  elements[48] = new Element(48, "Cd", "Cadmium", "카드뮴", 12, 5, m_tr, [2,8,18,18,2,0,0],  solid,  "1급 발암물질: 1910년 일본 진즈가와 유역에서 발생한 이타이이타이병(아파아파병)으로 수많은 농가 주민이 원인 모를 고통을 호소하다 뼈가 굽고 부서져 죽어 갔는데 나중에 근처 금속 광업 공장 폐수에 있던 카드뮴 때문이라는 사실이 밝혀진다. 카드뮴은 아연과 같은 족 원소라 성질이 비슷해서 우리 몸 안에서 아연의 자리를 차지하고 효소의 활동을 방해하는 것이다. 인체에는 매우 유해하지만 카드뮴 화합물은 페인트 도료나, 합금, 전지 등 첨단 산업 소재로 널리 쓰인다. 특히 CdS (황화카드뮴) 화합물은 조도센서와 양자점LED(QLED) 로 쓰인다.");
   n++;
-  elements[49] = new Element(49, "In", "Indium", "인듐", 13, 5, m_pt, [2,8,18,18,3,0,0], solid,  ": ");
+  elements[49] = new Element(49, "In", "Indium", "인듐", 13, 5, m_pt, [2,8,18,18,3,0,0], solid,  "유해한 중금속인 카드뮴 양자점LED (Quantum Dot LED) 를 대채할 친환경적인 양자점LED 소재로 인화인듐(InP)이 사용된다.");
   n++;
   elements[50] = new Element(50, "Sn", "Tin (Stannum)", "주석", 14, 5, m_pt, [2,8,18,18,4,0,0], solid,  ": ");
   n++;
@@ -1146,7 +1166,7 @@ function setupElement() {
   n++;
   elements[n] = new Element(83, "Bi", "Bismuth", "비스무트", 15, 6, m_pt, [2,8,18,32,18,5,0],  solid, ": ")
   n++;
-  elements[n] = new Element(84, "Po", "Polonium", "폴로늄", 16, 6, ml, [2,8,18,32,18,6,0],  solid, ": ");
+  elements[n] = new Element(84, "Po", "Polonium", "폴로늄", 16, 6, ml, [2,8,18,32,18,6,0],  solid, "폴로늄은 118개 원소 중 가장 유독한 원소로, 청산가리보다 25만배 높은 독성을 띤다.2006년 러시아 연방보안국의 요원이 영국으로 망명한 뒤 계속해서 푸틴을 비당하다 암살당한 사건이 있는데, 이때 사체에서 많은 양의 폴로늄 동위원소 폴로늄-210이 발견되었다. 자연계에 존재하는 양이 매우 적어 우라늄에서 분리하거나 비스무트에 중성자를 충돌시켜서 만들어야 하는 폴로늄은 1 마이크로그램당 2억원이 넘는 비싼 원소이다.");
   n++;
   elements[n] = new Element(85, "At", "Astatine", "아스타틴", 17, 6, nm_ha, [2,8,18,32,18,7,0], ": ");
   n++;
