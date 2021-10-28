@@ -280,6 +280,7 @@ function draw() {
   }
 }
 
+//
 function showSeries() {
   
   for (let i=1;i <n; i++) {
@@ -331,7 +332,7 @@ bLoop.onclick = function (){
 let tableTop = 6*h;
 let tableBot = tableTop + h*7+20;
 
-
+// Period, Group Label
 function showLabel() {
   strokeWeight(1);
   stroke(255);
@@ -382,7 +383,7 @@ function showLabel() {
 }
 
 class Element {
-  constructor(id, s, ename, kname, px, py, ptclass, shell, phase, desc) {
+  constructor(id, s, ename, kname, px, py, ptclass, shell, phase, desc, meltingP, boilingP, density) {
     this.id = id;
     this.s = s;
   
@@ -412,6 +413,9 @@ class Element {
     
     this.phase = phase;
     this.shell = shell;
+    this.meltingP = meltingP;
+    this.boilingP = boilingP;
+    this.density = density;
     
   }
   
@@ -473,17 +477,20 @@ class Element {
 
 
 // elements' detail box
-let l = w*3+10;
+let l = w*2+2;
 let t = h;
-let bw = 4*w;
+let bw = 5*w+10;
 let bh = 5*h-20;
 let r = l+bw;
 let b = t + bh;
 
+// 원소 상세 설명 상자 표시
 function showBox(id) {
   fill(elements[id].fillc);
   stroke(0);
   rect(l,t,bw,bh);
+  
+  //전자껍질 표시
   fill (255);
   textSize(15);
   textAlign(LEFT, BASELINE);
@@ -492,12 +499,16 @@ function showBox(id) {
     if( e == 0 ) {
       break;
     } 
-    let ch = char(75+s); // 'K' - 75
-    text(ch,r-40, t+(s+1)*h/2);
-    text(e,r-20, t+(s+1)*h/2);
+    let ch = char(75+s); // K(75), L,M,N,O,P,Q
+    text(ch,r-40, t+(s+2)*h/2);
+    text(e,r-20, t+(s+2)*h/2);
   }
-  textSize(20);
+  
+  //원소 번호
+  textSize(15);
   text(elements[id].id,l+5, t+20);
+  
+  // 원소 기호
   textSize(30);
   textStyle(BOLD);
   if(elements[id].phase == gas)
@@ -509,19 +520,30 @@ function showBox(id) {
       } else {
           fill(255);
       }
-  text(elements[id].s,l+5, t+50); //원소기호
+  text(elements[id].s,l+30, t+30); 
+  
+  //한글 원소명
   fill(255);
   textSize(13);
   textStyle(NORMAL);
   textWrap(WORD); 
-  text(elements[id].kname,l+5, b-85); //한글 원소명
+  text(elements[id].kname,l+75, t+15); 
+  //영어 원소명
   textSize(13);
-  text(elements[id].ename,l+5, b-80,95);//영어 원소명
+  text(elements[id].ename,l+75, t+20,95);
   
   // 상온에서 상태 표시
   // text( strPhases[elements[id].phase], l+5, b-55);
-    
+  // 녹는점, 끓는점, 밀도 
+  textSize(13);
+  text("녹는점: " + elements[id].meltingP + "℃",l+5, t+60);
+  text("끓는점: " + elements[id].boilingP + "℃",l+5, t+75);
+  text("밀   도: " + elements[id].density,l+5, t+90);
   
+  
+  
+  
+  // 원소 분류 
   textSize(13)
   text("["+ mseries[elements[id].ptclass] +"]",l+5, b-35);
   textSize(13);
@@ -986,7 +1008,7 @@ function mousePressed() {
       if(radioMute.checked == false){
          textToSpeech(csbox[i].name, kVoice[0]);
       }  
-    }  
+    } 
   }
   for(let i=2; i < 12; i++){
     if(csbox[i].contains(mouseX, mouseY)) {
@@ -999,24 +1021,24 @@ function mousePressed() {
 }
 
 function setupElement() {
-  elements[1] = new Element(1, "H", "Hydrogen", "수소", 1, 1, nm_re, [1,0,0,0,0,0,0], gas, "우주와 생명의 근원: 빅뱅으로 탄생한 초기 우주의 대부분은 수소와 헬륨으로 채워져 있었는데 이후 핵융합을 거쳐 더욱 무거운 원소들로 바뀌면서 다양한 물질과 행성이 탄생했다. 물을 뜻하는 그리스어 Hydro-라는 어원을 가진 수소는 생명의 근원인 물을 만들어 낸다. 인간의 몸의 70%가 물이고, 단백질, 탄수화물, 지방 역시 수소를 포함하고 있으므로 수소는 생명의 핵심 요소라고 할 수 있다. ");
+  elements[1] = new Element(1, "H", "Hydrogen", "수소", 1, 1, nm_re, [1,0,0,0,0,0,0], gas, "우주와 생명의 근원: 빅뱅으로 탄생한 초기 우주의 대부분은 수소와 헬륨으로 채워져 있었는데 이후 핵융합을 거쳐 더욱 무거운 원소들로 바뀌면서 다양한 물질과 행성이 탄생했다. 물을 뜻하는 그리스어 Hydro-라는 어원을 가진 수소는 생명의 근원인 물을 만들어 낸다. 인간의 몸의 70%가 물이고, 단백질, 탄수화물, 지방 역시 수소를 포함하고 있으므로 수소는 생명의 핵심 요소라고 할 수 있다.",-259, -253, "0.09g/L");
   n++;
-  elements[2] = new Element(2, "He", "Helium", "헬륨", 18, 1, nm_ng, [2,0,0,0,0,0,0], gas, "안전하게 비행선을 뜨게하는 두 번째로 가벼운 기체");
+  elements[2] = new Element(2, "He", "Helium", "헬륨", 18, 1, nm_ng, [2,0,0,0,0,0,0], gas, "수소 다음으로 가벼우며 수소와 딜리 반응성이 낮아서 안전하기 때문에 풍선이나 기구 등을 띄울 때 사용한다. 모든 원소 중에서 끓는점과 녹는점이 가장 낮은 원소로 극저온 처리가 필요한 경우에 액체 헬륨이 중요하게 쓰인다.", -272, -269, "0.179g/L");
   n++;
-  elements[3] = new Element(3, "Li", "Lithium", "리튬", 1, 2,  m_al, [2,1,0,0,0,0,0], solid, "물에 둥둥 뜨는 리튬은 비중이 0.534로 존재하는 모든 금속들 중 가장 가볍다. 노트북, 스마트폰 등의 현재의 모든 전자제품에는 가볍고 발생 전압은 높으며 전류 용량은 큰 리튬 전지가 사용된다. 리튬은 1족 알칼리 금속의 시작 원소로, 알칼리 금속은 물과 만나면 수소를 발생시키며 격렬한 폭발 반응을 일으키므로 조심하자.");
+  elements[3] = new Element(3, "Li", "Lithium", "리튬", 1, 2,  m_al, [2,1,0,0,0,0,0], solid, "물에 둥둥 뜨는 리튬은 비중이 0.534로 존재하는 모든 금속들 중 가장 가볍다. 노트북, 스마트폰 등의 현재의 모든 전자제품에는 가볍고 발생 전압은 높으며 전류 용량은 큰 리튬 전지가 사용된다. 리튬은 1족 알칼리 금속의 시작 원소로, 알칼리 금속은 물과 만나면 수소를 발생시키며 격렬한 폭발 반응을 일으키므로 조심하자.", 181, 1347, "0.534g/cm3");
   n++;
   elements[4] = new Element(4, "Be", "Beryllium", 
-                            "베릴륨", 2, 2, m_ae, [2,2,0,0,0,0,0], solid, "알루미늄보다 가볍고 강철보다 단단한 금속");
+                            "베릴륨", 2, 2, m_ae, [2,2,0,0,0,0,0], solid, "알루미늄보다 가볍고 강철보다 단단한 금속", 1287, 2472, "1.848g/cm3");
   n++;
-  elements[5] = new Element(5, "B", "Boron", "붕소", 13, 2, ml, [2,3,0,0,0,0,0], solid, "불에 타기 어려워 내열유리, 로켓 엔진 노즐등에 사용되는 반금속");
+  elements[5] = new Element(5, "B", "Boron", "붕소", 13, 2, ml, [2,3,0,0,0,0,0], solid, "불에 타기 어려워 내열유리, 로켓 엔진 노즐등에 사용되는 반금속", 2077, 3870, "2.34g/cm3");
   n++;
-  elements[6] = new Element(6, "C", "Carbon", "탄소", 14, 2, nm_re,[2,4,0,0,0,0,0], solid, ": 다이아몬드, 연필심, 유기화합물을 이루는 생명의 원소");
+  elements[6] = new Element(6, "C", "Carbon", "탄소", 14, 2, nm_re,[2,4,0,0,0,0,0], solid, ": 다이아몬드, 연필심, 유기화합물을 이루는 생명의 원소", 3550, 4827, "3.513g/cm3");
   n++;
-  elements[7] = new Element(7, "N", "Nitrogen", "질소", 15, 2,nm_re, [2,5,0,0,0,0,0], gas, ": 공기의 78%를 차지하는 기체");
+  elements[7] = new Element(7, "N", "Nitrogen", "질소", 15, 2,nm_re, [2,5,0,0,0,0,0], gas, ": 공기의 78%를 차지하는 기체", -210, -196, "1.251g/L");
   n++;
-  elements[8] = new Element(8, "O", "Oxygen", "산소", 16, 2,nm_re, [2,6,0,0,0,0,0], gas, ": 물질을 연소시키거나 산화시키는 기체");
+  elements[8] = new Element(8, "O", "Oxygen", "산소", 16, 2,nm_re, [2,6,0,0,0,0,0], gas, ": 물질을 연소시키거나 산화시키는 기체", -218, -183, "1.429g/L(0℃)");
   n++;
-  elements[9] = new Element(9, "F", "Fluorine","플루오린 / 불소",17,2,nm_ha,  [2,7,0,0,0,0,0], gas,  "살충제를 뿌려도 잘 죽지 않는 바퀴벌레도 플루오린이 든 치약에 닿으면 몇 분 안에 죽는다.많은 화확자들이 플로오린 분리 실험을 하다 죽었고, 분리에 성공해 노벨상을 수상한 프랑스 화학자 무아상은 실명했다. 뼈,유리, 세라믹을 녹이기 때문에 적은 양의 플루오린은 치아에 미세한 구멍이 무수히 생기는 충치 초기에 구멍을 녹여 보수하는 효과가 있다. 하지만 적은 양이라도 플루오린이 몸에 쌓이면 뼈를 무르게 하기 때문에 플루오린 치약을 사양할 때는 반드시 여러번 입을 헹궈 주어야 한다. 플루오린 화합물인 폴리테트라플루오로에틸렌은  내산성, 내열성, 절연성이 뛰어나 조리 기구의 코팅제로 널리 사용되고, 이를 섬유로 가공한 고어텍스는 등산복등에 이용된다.");
+  elements[9] = new Element(9, "F", "Fluorine","플루오린 / 불소",17,2,nm_ha,  [2,7,0,0,0,0,0], gas,  "살충제를 뿌려도 잘 죽지 않는 바퀴벌레도 플루오린이 든 치약에 닿으면 몇 분 안에 죽는다.많은 화확자들이 플로오린 분리 실험을 하다 죽었고, 분리에 성공해 노벨상을 수상한 프랑스 화학자 무아상은 실명했다. 뼈,유리, 세라믹을 녹이기 때문에 적은 양의 플루오린은 치아에 미세한 구멍이 무수히 생기는 충치 초기에 구멍을 녹여 보수하는 효과가 있다. 하지만 적은 양이라도 플루오린이 몸에 쌓이면 뼈를 무르게 하기 때문에 플루오린 치약을 사양할 때는 반드시 여러번 입을 헹궈 주어야 한다. 플루오린 화합물인 폴리테트라플루오로에틸렌은  내산성, 내열성, 절연성이 뛰어나 조리 기구의 코팅제로 널리 사용되고, 이를 섬유로 가공한 고어텍스는 등산복등에 이용된다.", -220, -188, "1.696g/L(0℃)");
   n++;
   elements[10] = new Element(10, "Ne", "Neon", "네온", 18, 2,nm_ng, [2,8,0,0,0,0,0], gas,  ": 전압을 가하면 붉게 빛나는 기체");
   n++;
