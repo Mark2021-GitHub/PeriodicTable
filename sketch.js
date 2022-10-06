@@ -1140,7 +1140,7 @@ function setupElement() {
   n++;
   elements[n] = new Element(59, "Pr", "Praseodymium", "프라세오디뮴", 3, 6, m_la, [2,8,18,21,8,2,0],  solid, ": ");
   n++;
-  elements[n] = new Element(60, "Nd", "Neodymium", "네오디뮴", 3, 6, m_la, [2,8,18,22,8,2,0],  solid, ": ");
+  elements[n] = new Element(60, "Nd", "Neodymium", "네오디뮴", 3, 6, m_la, [2,8,18,22,8,2,0],  solid, "철 자석에 네오디뮴 원자를 추가하면 철 원자의 N극과 S극 방향이 잘 흐트러 지지 않아서 매우 강한 자기력을 지닌다.");
   n++;
   elements[n] = new Element(61, "Pm", "Promethium", "프로메튬", 3, 6, m_la, [2,8,18,23,8,2,0], solid,  ": ");
   n++;
@@ -1152,7 +1152,7 @@ function setupElement() {
   n++;
   elements[n] = new Element(65, "Tb", "Terbium", "터븀", 3, 6, m_la, [2,8,18,27,8,2,0], solid,  ": ");
   n++;
-  elements[n] = new Element(66, "Dy", "Dysprosium", "디스프로슘", 3, 6, m_la, [2,8,18,28,8,2,0], solid,  ": ");
+  elements[n] = new Element(66, "Dy", "Dysprosium", "디스프로슘", 3, 6, m_la, [2,8,18,28,8,2,0], solid,  "전기자동차의 구동 모터에는 내열성을 올리기 위해 디스프로슘 원자가 들어간 네오디뮴 자석이 사용된다.");
   n++;
   elements[n] = new Element(67, "Ho", "Holmium", "홀륨", 3, 6, m_la, [2,8,18,29,8,2,0], ": ");
   n++;
